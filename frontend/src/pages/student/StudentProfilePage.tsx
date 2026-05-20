@@ -59,7 +59,7 @@ export default function StudentProfilePage() {
 
   const saveMutation = useMutation({
     mutationFn: (data: FormData) =>
-      studentsApi.upsertProfile({ ...data, skills, researchInterests: interests }),
+      studentsApi.upsertProfile({ ...data, gpa: data.gpa === '' ? null : data.gpa ? Number(data.gpa) : null, skills, researchInterests: interests }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['student-profile'] });
       refreshUser();
