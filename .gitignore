@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.env.local
+uploads/cvs/*
+uploads/avatars/*
+!uploads/cvs/.gitkeep
+!uploads/avatars/.gitkeep
+.DS_Store
+*.log
