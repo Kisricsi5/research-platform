@@ -46,7 +46,8 @@ export default function ApplyPage() {
       applicationsApi.submit({
         professorId: (project?.professorId ?? professorIdParam)!,
         projectId: projectId ?? null,
-        ...data,
+        coverLetter: data.coverLetter ?? '',
+        availability: data.availability,
       }),
     onSuccess: () => {
       toast.success('Application submitted!');
