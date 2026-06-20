@@ -17,7 +17,14 @@ const app = express();
 
 // Security
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: env.frontendUrl, credentials: true }));
+app.use(cors({
+  origin: [
+    env.frontendUrl,
+    'https://research-platform-lake.vercel.app',
+    'http://localhost:5173',
+  ],
+  credentials: true,
+}));
 app.use(cookieParser());
 
 // Body parsing
