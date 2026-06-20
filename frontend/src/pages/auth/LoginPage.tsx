@@ -30,7 +30,14 @@ export default function LoginPage() {
       const stored = localStorage.getItem('accessToken');
       if (stored) navigate('/');
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Login failed');
+      if (err.response) {
+        const message = err.response.data?.error || `Server error: ${err.response.status}`;
+        toast.error(message);
+      } else if (err.request) {
+        toast.error('Cannot reach the server. The backend may be starting up — please wait 30 seconds and try again.');
+      } else {
+        toast.error(err.message || 'Login failed');
+      }
     }
   };
 

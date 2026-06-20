@@ -38,7 +38,16 @@ export default function SignupPage() {
       toast.success('Account created! Please verify your email.');
       navigate(data.role === 'STUDENT' ? '/student/profile' : '/professor/profile');
     } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Signup failed');
+      if (err.response) {
+        // Server responded with an error
+        const message = err.response.data?.error || err.response.data?.message || `Server error: ${err.response.status}`;
+        toast.error(message);
+      } else if (err.request) {
+        // Request was made but no response received (backend down/CORS)
+        toast.error('Cannot reach the server. The backend may be starting up — please wait 30 seconds and try again.');
+      } else {
+        toast.error(err.message || 'Signup failed');
+      }
     }
   };
 
