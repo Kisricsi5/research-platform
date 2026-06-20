@@ -2,8 +2,6 @@ import { Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../config/prisma';
 import { AuthRequest } from '../types';
-import path from 'path';
-import fs from 'fs';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -47,15 +45,8 @@ export async function uploadCV(req: AuthRequest, res: Response): Promise<void> {
     return;
   }
 
-  const profile = await prisma.studentProfile.findUnique({ where: { userId: req.user!.userId } });
-
-  // Remove old CV if exists
-  if (profile?.cvFilePath) {
-    const oldPath = profile.cvFilePath;
-    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-  }
-
-  const cvFilePath = req.file.path;
+  // S3 URL is in req.file.location
+  const cvFilePath = (req.file as any).location;
   const updated = await prisma.studentProfile.upsert({
     where: { userId: req.user!.userId },
     update: { cvFilePath },
@@ -79,13 +70,7 @@ export async function uploadAvatar(req: AuthRequest, res: Response): Promise<voi
     return;
   }
 
-  const profile = await prisma.studentProfile.findUnique({ where: { userId: req.user!.userId } });
-  if (profile?.profilePicture) {
-    const oldPath = profile.profilePicture;
-    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-  }
-
-  const profilePicture = req.file.path;
+  const profilePicture = (req.file as any).location;
   const updated = await prisma.studentProfile.upsert({
     where: { userId: req.user!.userId },
     update: { profilePicture },

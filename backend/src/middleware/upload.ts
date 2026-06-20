@@ -1,36 +1,10 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { env } from '../config/env';
+import multerS3 from 'multer-s3';
 import { Request } from 'express';
+import { s3Client, S3_BUCKET } from '../config/s3';
+import { env } from '../config/env';
 
-function ensureDir(dir: string) {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-}
-
-const cvStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    const dir = path.join(env.upload.dir, 'cvs');
-    ensureDir(dir);
-    cb(null, dir);
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `cv-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-  },
-});
-
-const avatarStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    const dir = path.join(env.upload.dir, 'avatars');
-    ensureDir(dir);
-    cb(null, dir);
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `avatar-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-  },
-});
+const maxSize = env.upload.maxSizeMb * 1024 * 1024;
 
 function pdfFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) {
   if (file.mimetype === 'application/pdf') {
@@ -48,7 +22,30 @@ function imageFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFi
   }
 }
 
-const maxSize = (env.upload.maxSizeMb) * 1024 * 1024;
+export const uploadCV = multer({
+  storage: multerS3({
+    s3: s3Client,
+    bucket: S3_BUCKET,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (_req, file, cb) => {
+      const ext = file.originalname.split('.').pop();
+      cb(null, `cvs/${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`);
+    },
+  }),
+  fileFilter: pdfFilter,
+  limits: { fileSize: maxSize },
+});
 
-export const uploadCV = multer({ storage: cvStorage, fileFilter: pdfFilter, limits: { fileSize: maxSize } });
-export const uploadAvatar = multer({ storage: avatarStorage, fileFilter: imageFilter, limits: { fileSize: 2 * 1024 * 1024 } });
+export const uploadAvatar = multer({
+  storage: multerS3({
+    s3: s3Client,
+    bucket: S3_BUCKET,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (_req, file, cb) => {
+      const ext = file.originalname.split('.').pop();
+      cb(null, `avatars/${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`);
+    },
+  }),
+  fileFilter: imageFilter,
+  limits: { fileSize: 2 * 1024 * 1024 },
+});

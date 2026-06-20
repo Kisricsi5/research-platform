@@ -29,4 +29,10 @@ export const env = {
     dir: process.env.UPLOAD_DIR || 'uploads',
     maxSizeMb: parseInt(process.env.MAX_FILE_SIZE_MB || '5', 10),
   },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    region: process.env.AWS_REGION || 'us-east-2',
+    bucketName: process.env.AWS_S3_BUCKET || 'research-platform-files',
+  },
 };

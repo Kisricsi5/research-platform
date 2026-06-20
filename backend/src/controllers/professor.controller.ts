@@ -4,7 +4,6 @@ import { prisma } from '../config/prisma';
 import { AuthRequest } from '../types';
 import { getPagination, buildPaginationMeta } from '../utils/pagination';
 import { ProfessorSearchQuery } from '../types';
-import fs from 'fs';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -49,18 +48,15 @@ export async function uploadAvatar(req: AuthRequest, res: Response): Promise<voi
     return;
   }
 
-  const profile = await prisma.professorProfile.findUnique({ where: { userId: req.user!.userId } });
-  if (profile?.profilePicture) {
-    if (fs.existsSync(profile.profilePicture)) fs.unlinkSync(profile.profilePicture);
-  }
+  const profilePicture = (req.file as any).location;
 
   const updated = await prisma.professorProfile.upsert({
     where: { userId: req.user!.userId },
-    update: { profilePicture: req.file.path },
+    update: { profilePicture },
     create: {
       userId: req.user!.userId,
       firstName: '', lastName: '', title: '', department: '', university: '',
-      profilePicture: req.file.path,
+      profilePicture,
     },
   });
 
