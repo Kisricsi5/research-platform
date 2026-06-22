@@ -17,12 +17,26 @@ const app = express();
 
 // Security
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+const allowedOrigins = [
+  env.frontendUrl,
+  'https://research-platform-lake.vercel.app',
+  'http://localhost:5173',
+];
+
 app.use(cors({
-  origin: [
-    env.frontendUrl,
-    'https://research-platform-lake.vercel.app',
-    'http://localhost:5173',
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow explicit whitelist, any Vercel deployment for this project, and localhost
+    if (
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/research-platform.*\.vercel\.app$/.test(origin) ||
+      /^http:\/\/localhost(:\d+)?$/.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(cookieParser());
