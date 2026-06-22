@@ -1,15 +1,16 @@
 import { Router } from 'express';
 import * as auth from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth';
+import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
-router.post('/signup', auth.signup);
-router.post('/login', auth.login);
-router.post('/refresh', auth.refresh);
-router.get('/verify-email', auth.verifyEmail);
-router.post('/forgot-password', auth.forgotPassword);
-router.post('/reset-password', auth.resetPassword);
-router.get('/me', authenticate, auth.getMe);
+router.post('/signup', asyncHandler(auth.signup));
+router.post('/login', asyncHandler(auth.login));
+router.post('/refresh', asyncHandler(auth.refresh));
+router.get('/verify-email', asyncHandler(auth.verifyEmail));
+router.post('/forgot-password', asyncHandler(auth.forgotPassword));
+router.post('/reset-password', asyncHandler(auth.resetPassword));
+router.get('/me', authenticate, asyncHandler(auth.getMe));
 
 export default router;

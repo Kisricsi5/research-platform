@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 
 import { env } from './config/env';
+import { prisma } from './config/prisma';
 import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth.routes';
 import studentRoutes from './routes/student.routes';
@@ -62,6 +63,16 @@ app.use('/api', publicRoutes);
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+
+// Database connectivity check
+app.get('/health/db', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', db: 'connected' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', db: 'unreachable', message: err instanceof Error ? err.message : String(err) });
+  }
+});
 
 // Error handler
 app.use(errorHandler);
