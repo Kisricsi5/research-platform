@@ -34,9 +34,9 @@ export default function SignupPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await signup(data.email, data.password, data.role);
+      const user = await signup(data.email, data.password, data.role);
       toast.success('Account created! Please verify your email.');
-      navigate(data.role === 'STUDENT' ? '/student/profile' : '/professor/profile');
+      navigate(user.role === 'STUDENT' ? '/student/profile' : '/professor/profile');
     } catch (err: any) {
       if (err.response) {
         // Server responded with an error

@@ -25,10 +25,8 @@ export default function LoginPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await login(data.email, data.password);
-      // Redirect based on what user has
-      const stored = localStorage.getItem('accessToken');
-      if (stored) navigate('/');
+      const user = await login(data.email, data.password);
+      navigate(user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard');
     } catch (err: any) {
       if (err.response) {
         const message = err.response.data?.error || `Server error: ${err.response.status}`;

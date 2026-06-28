@@ -5,8 +5,8 @@ import { authApi } from '../api/auth';
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, role: 'STUDENT' | 'PROFESSOR') => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  signup: (email: string, password: string, role: 'STUDENT' | 'PROFESSOR') => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -35,18 +35,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [refreshUser]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User> => {
     const data = await authApi.login({ email, password });
+    if (!data?.accessToken || !data?.user) {
+      throw new Error('Invalid response from server');
+    }
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     setUser(data.user);
+    return data.user;
   };
 
-  const signup = async (email: string, password: string, role: 'STUDENT' | 'PROFESSOR') => {
+  const signup = async (email: string, password: string, role: 'STUDENT' | 'PROFESSOR'): Promise<User> => {
     const data = await authApi.signup({ email, password, role });
+    if (!data?.accessToken || !data?.user) {
+      throw new Error('Invalid response from server');
+    }
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     setUser(data.user);
+    return data.user;
   };
 
   const logout = () => {
