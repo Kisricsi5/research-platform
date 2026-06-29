@@ -16,7 +16,15 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    const contentType = String(res.headers['content-type'] || '');
+    if (contentType.includes('text/html')) {
+      return Promise.reject(
+        new Error('Cannot reach the API server. VITE_API_URL may not be configured correctly.'),
+      );
+    }
+    return res;
+  },
   async (error) => {
     const original = error.config;
     if (error.response?.status === 401 && !original._retry) {
