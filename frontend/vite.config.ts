@@ -14,7 +14,7 @@ export default defineConfig({
         short_name: 'ResearchBridge',
         description: 'Connect university students with professors for research opportunities',
         theme_color: '#2563eb',
-        background_color: '#f9fafb',
+        background_color: '#f8fafc',
         display: 'standalone',
         start_url: '/',
         icons: [

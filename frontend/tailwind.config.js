@@ -4,6 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Neutral scale remapped to slate per brand spec:
+        // bg #F8FAFC · border #E2E8F0 · secondary text #475569 · main text #0F172A
+        gray: {
+          50:  '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
         primary: {
           50:  '#eff6ff',
           100: '#dbeafe',
@@ -16,25 +31,19 @@ export default {
           800: '#1e40af',
           900: '#1e3a8a',
         },
+        // Navy/ink ramp: 700 = brand deep navy #1E3A8A, 900 = main text #0F172A
         ink: {
-          50:  '#f4f6fb',
-          100: '#e8ecf6',
-          200: '#c9d3e8',
-          300: '#a3b2d4',
-          400: '#6379bd',
-          500: '#3d5397',
-          600: '#2b3f7e',
-          700: '#1f2f63',
-          800: '#16234c',
-          900: '#0f1a3a',
-          950: '#0a1229',
-        },
-        teal: {
-          50:  '#f0fdfa',
-          100: '#ccfbf1',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
+          50:  '#f0f4fc',
+          100: '#e1e9f8',
+          200: '#c3d0ee',
+          300: '#94aade',
+          400: '#5f7cc7',
+          500: '#3956a8',
+          600: '#27418f',
+          700: '#1e3a8a',
+          800: '#172a5e',
+          900: '#0f172a',
+          950: '#0b1120',
         },
       },
       fontFamily: {

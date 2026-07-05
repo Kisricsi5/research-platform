@@ -93,7 +93,7 @@
   .badge-yellow { @apply badge bg-amber-50 text-amber-700 ring-amber-600/20; }
   .badge-red    { @apply badge bg-red-50 text-red-700 ring-red-600/15; }
   .badge-gray   { @apply badge bg-gray-100 text-gray-600 ring-gray-500/10; }
-  .badge-teal   { @apply badge bg-teal-50 text-teal-700 ring-teal-600/15; }
+  .badge-emerald   { @apply badge bg-emerald-50 text-emerald-700 ring-emerald-600/15; }
   .badge-ink    { @apply badge bg-ink-100 text-ink-700 ring-ink-600/15; }
 
   /* ---------- Landing / marketing ---------- */

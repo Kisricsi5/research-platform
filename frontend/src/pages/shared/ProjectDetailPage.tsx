@@ -74,7 +74,7 @@ export default function ProjectDetailPage() {
               {compensationLabels[project.compensationType]}
             </span>
             {project.isActive && !isExpired ? (
-              <span className="badge-teal"><ShieldCheck className="h-3 w-3" />Accepting applications</span>
+              <span className="badge-emerald"><ShieldCheck className="h-3 w-3" />Accepting applications</span>
             ) : (
               <span className="badge-gray">Closed</span>
             )}

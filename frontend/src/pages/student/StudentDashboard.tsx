@@ -140,7 +140,7 @@ export default function StudentDashboard() {
           <div><p className="text-sm font-medium text-gray-900">Browse Researchers</p><p className="text-xs text-gray-500">Find your next mentor</p></div>
         </Link>
         <Link to="/projects" className="card card-hover p-4 flex items-center gap-3">
-          <div className="bg-teal-100 p-2 rounded-lg"><FileText className="h-5 w-5 text-teal-600" /></div>
+          <div className="bg-emerald-100 p-2 rounded-lg"><FileText className="h-5 w-5 text-emerald-600" /></div>
           <div><p className="text-sm font-medium text-gray-900">Browse Opportunities</p><p className="text-xs text-gray-500">Explore open positions</p></div>
         </Link>
         <Link to="/student/profile" className="card card-hover p-4 flex items-center gap-3">
