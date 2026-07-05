@@ -32,25 +32,30 @@ export default function Navbar() {
   const dashboardPath = user?.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard';
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-lg border-b border-gray-200/80 supports-[backdrop-filter]:bg-white/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="bg-primary-600 rounded-lg p-1.5">
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="bg-primary-600 rounded-lg p-1.5 shadow-[0_2px_8px_-2px_rgba(37,99,235,.5)] transition-transform duration-200 group-hover:scale-105">
               <FlaskConical className="h-5 w-5 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-lg">ResearchBridge</span>
+            <span className="font-bold text-ink-900 text-lg tracking-tight">ResearchBridge</span>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/professors" className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors">
-              Browse Professors
+          <div className="hidden md:flex items-center gap-7">
+            <Link to="/projects" className="nav-link">
+              Opportunities
             </Link>
-            <Link to="/projects" className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors">
-              Browse Projects
+            <Link to="/professors" className="nav-link">
+              Researchers
             </Link>
+            {!user && (
+              <Link to="/#how-it-works" className="nav-link">
+                How it works
+              </Link>
+            )}
 
             {user ? (
               <div className="flex items-center gap-3">
@@ -159,7 +164,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <Link to="/login" className="btn-secondary">Sign in</Link>
+                <Link to="/login" className="btn-ghost">Sign in</Link>
                 <Link to="/signup" className="btn-primary">Get started</Link>
               </div>
             )}
