@@ -34,8 +34,8 @@ export default function ProfessorDashboard() {
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Professor Dashboard</h1>
-          <p className="text-gray-500 mt-1">Manage your research opportunities and applications</p>
+          <h1 className="display text-3xl">Your lab, at a glance</h1>
+          <p className="text-gray-500 mt-2">Manage your research opportunities and applications</p>
         </div>
         <Link to="/professor/projects/new" className="btn-primary gap-2">
           <Plus className="h-4 w-4" />Post Opportunity

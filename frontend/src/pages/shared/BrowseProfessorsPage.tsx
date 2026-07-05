@@ -4,8 +4,8 @@ import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { professorsApi } from '../../api/professors';
 import Layout from '../../components/layout/Layout';
 import ProfessorCard from '../../components/shared/ProfessorCard';
-import { PageSpinner } from '../../components/ui/Spinner';
 import EmptyState from '../../components/ui/EmptyState';
+import { SkeletonGrid } from '../../components/ui/Skeleton';
 import { Users } from 'lucide-react';
 
 const DEPARTMENTS = ['Computer Science', 'Biology', 'Chemistry', 'Physics', 'Psychology', 'Mathematics', 'Engineering', 'Medicine', 'Economics', 'Sociology'];
@@ -37,12 +37,19 @@ export default function BrowseProfessorsPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Browse Professors</h1>
-          <p className="text-gray-500 mt-1">Find faculty whose research aligns with your interests</p>
+      {/* Page header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="section-eyebrow">Researchers</p>
+          <h1 className="display text-3xl sm:text-4xl mb-3">Find researchers & labs</h1>
+          <p className="text-lg text-gray-600 max-w-2xl">
+            Browse faculty and lab profiles by department and research area — and see
+            who's currently accepting students.
+          </p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Search bar */}
         <div className="flex gap-3 mb-6">
@@ -104,18 +111,18 @@ export default function BrowseProfessorsPage() {
 
         {/* Results */}
         {isLoading ? (
-          <PageSpinner />
+          <SkeletonGrid />
         ) : !data?.data.length ? (
           <EmptyState
             icon={Users}
-            title="No professors found"
-            description="Try adjusting your search or filters"
+            title="No researchers found"
+            description="Try broadening your search or clearing a filter — new labs join throughout the semester."
             action={<button onClick={clearFilters} className="btn-secondary">Clear filters</button>}
           />
         ) : (
           <>
-            <p className="text-sm text-gray-500 mb-4">
-              {data.meta.total} professor{data.meta.total !== 1 ? 's' : ''} found
+            <p className="text-sm text-gray-500 mb-5" aria-live="polite">
+              <span className="font-semibold text-ink-900">{data.meta.total}</span> researcher{data.meta.total !== 1 ? 's' : ''}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {data.data.map((prof) => (

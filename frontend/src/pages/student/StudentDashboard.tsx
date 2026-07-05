@@ -36,10 +36,10 @@ export default function StudentDashboard() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back{profile ? `, ${profile.firstName}` : ''}!
+        <h1 className="display text-3xl">
+          Welcome back{profile ? `, ${profile.firstName}` : ''}
         </h1>
-        <p className="text-gray-500 mt-1">Here's an overview of your research journey</p>
+        <p className="text-gray-500 mt-2">Here's an overview of your research journey</p>
       </div>
 
       {/* Profile completion nudge */}
@@ -135,15 +135,15 @@ export default function StudentDashboard() {
 
       {/* Quick actions */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Link to="/professors" className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
+        <Link to="/professors" className="card card-hover p-4 flex items-center gap-3">
           <div className="bg-primary-100 p-2 rounded-lg"><Search className="h-5 w-5 text-primary-600" /></div>
-          <div><p className="text-sm font-medium text-gray-900">Browse Professors</p><p className="text-xs text-gray-500">Find your next mentor</p></div>
+          <div><p className="text-sm font-medium text-gray-900">Browse Researchers</p><p className="text-xs text-gray-500">Find your next mentor</p></div>
         </Link>
-        <Link to="/projects" className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
+        <Link to="/projects" className="card card-hover p-4 flex items-center gap-3">
           <div className="bg-teal-100 p-2 rounded-lg"><FileText className="h-5 w-5 text-teal-600" /></div>
-          <div><p className="text-sm font-medium text-gray-900">Browse Projects</p><p className="text-xs text-gray-500">Explore open positions</p></div>
+          <div><p className="text-sm font-medium text-gray-900">Browse Opportunities</p><p className="text-xs text-gray-500">Explore open positions</p></div>
         </Link>
-        <Link to="/student/profile" className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
+        <Link to="/student/profile" className="card card-hover p-4 flex items-center gap-3">
           <div className="bg-amber-100 p-2 rounded-lg"><Plus className="h-5 w-5 text-amber-600" /></div>
           <div><p className="text-sm font-medium text-gray-900">Update Profile</p><p className="text-xs text-gray-500">Keep your profile current</p></div>
         </Link>
