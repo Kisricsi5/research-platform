@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, X } from 'lucide-react';
+import { Search, X, BookOpen } from 'lucide-react';
 import { projectsApi } from '../../api/projects';
 import Layout from '../../components/layout/Layout';
 import ProjectCard from '../../components/shared/ProjectCard';
-import { PageSpinner } from '../../components/ui/Spinner';
 import EmptyState from '../../components/ui/EmptyState';
-import { BookOpen } from 'lucide-react';
+import { SkeletonGrid } from '../../components/ui/Skeleton';
+import { cn } from '../../utils';
+
+const COMPENSATION_FILTERS = [
+  { value: '', label: 'All' },
+  { value: 'PAID', label: 'Paid' },
+  { value: 'STIPEND', label: 'Stipend' },
+  { value: 'CREDIT', label: 'Course credit' },
+  { value: 'UNPAID', label: 'Volunteer' },
+];
 
 export default function BrowseProjectsPage() {
   const [q, setQ] = useState('');
@@ -24,58 +32,95 @@ export default function BrowseProjectsPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Browse Research Projects</h1>
-          <p className="text-gray-500 mt-1">Explore open positions and apply to projects that match your skills</p>
+      {/* Page header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="section-eyebrow">Opportunities</p>
+          <h1 className="display text-3xl sm:text-4xl mb-3">Research opportunities</h1>
+          <p className="text-lg text-gray-600 max-w-2xl">
+            Verified openings from labs and faculty — with skills, time commitment,
+            compensation, and deadlines up front.
+          </p>
         </div>
+      </div>
 
-        <div className="flex gap-3 mb-6 flex-wrap">
-          <div className="flex-1 min-w-64 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search + filter chips */}
+        <div className="space-y-4 mb-8">
+          <div className="relative max-w-2xl">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               value={q}
               onChange={(e) => { setQ(e.target.value); setPage(1); }}
-              className="input pl-9"
-              placeholder="Search projects..."
+              className="input pl-10"
+              placeholder="Search by title, topic, or skill…"
+              aria-label="Search research opportunities"
             />
           </div>
-          <select
-            value={compensationType}
-            onChange={(e) => { setCompensationType(e.target.value); setPage(1); }}
-            className="input w-44"
-          >
-            <option value="">All compensation</option>
-            <option value="PAID">Paid</option>
-            <option value="STIPEND">Stipend</option>
-            <option value="CREDIT">Course Credit</option>
-            <option value="UNPAID">Volunteer</option>
-          </select>
-          {hasFilters && (
-            <button onClick={clearFilters} className="btn-secondary gap-1 text-red-600 border-red-200 hover:bg-red-50">
-              <X className="h-4 w-4" />Clear
-            </button>
-          )}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide mr-1">Compensation</span>
+            {COMPENSATION_FILTERS.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => { setCompensationType(f.value); setPage(1); }}
+                aria-pressed={compensationType === f.value}
+                className={cn(
+                  'rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150 ring-1 ring-inset',
+                  compensationType === f.value
+                    ? 'bg-ink-900 text-white ring-ink-900 shadow-sm'
+                    : 'bg-white text-gray-600 ring-gray-300 hover:ring-gray-400 hover:text-gray-900',
+                )}
+              >
+                {f.label}
+              </button>
+            ))}
+            {hasFilters && (
+              <button onClick={clearFilters} className="btn-ghost btn-sm gap-1 text-gray-500">
+                <X className="h-3.5 w-3.5" />Clear all
+              </button>
+            )}
+          </div>
         </div>
 
         {isLoading ? (
-          <PageSpinner />
+          <SkeletonGrid />
         ) : !data?.data.length ? (
-          <EmptyState icon={BookOpen} title="No projects found" description="Try adjusting your search" action={<button onClick={clearFilters} className="btn-secondary">Clear filters</button>} />
+          <EmptyState
+            icon={BookOpen}
+            title={hasFilters ? 'No matches for these filters' : 'No open opportunities right now'}
+            description={
+              hasFilters
+                ? 'Try broadening your search or clearing a filter — new positions are posted throughout the semester.'
+                : 'New research positions are posted throughout the semester. Check back soon, or browse researchers directly.'
+            }
+            action={
+              hasFilters
+                ? <button onClick={clearFilters} className="btn-secondary">Clear filters</button>
+                : <a href="/professors" className="btn-primary">Browse researchers</a>
+            }
+          />
         ) : (
           <>
-            <p className="text-sm text-gray-500 mb-4">{data.meta.total} project{data.meta.total !== 1 ? 's' : ''} found</p>
+            <p className="text-sm text-gray-500 mb-5" aria-live="polite">
+              <span className="font-semibold text-ink-900">{data.meta.total}</span> open opportunit{data.meta.total !== 1 ? 'ies' : 'y'}
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {data.data.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
             {data.meta.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-10">
-                <button onClick={() => setPage(page - 1)} disabled={!data.meta.hasPrevPage} className="btn-secondary">Previous</button>
-                <span className="text-sm text-gray-500">Page {data.meta.page} of {data.meta.totalPages}</span>
-                <button onClick={() => setPage(page + 1)} disabled={!data.meta.hasNextPage} className="btn-secondary">Next</button>
-              </div>
+              <nav className="flex items-center justify-center gap-3 mt-12" aria-label="Pagination">
+                <button onClick={() => setPage(page - 1)} disabled={!data.meta.hasPrevPage} className="btn-secondary">
+                  Previous
+                </button>
+                <span className="text-sm text-gray-500 tabular-nums">
+                  Page {data.meta.page} of {data.meta.totalPages}
+                </span>
+                <button onClick={() => setPage(page + 1)} disabled={!data.meta.hasNextPage} className="btn-secondary">
+                  Next
+                </button>
+              </nav>
             )}
           </>
         )}
