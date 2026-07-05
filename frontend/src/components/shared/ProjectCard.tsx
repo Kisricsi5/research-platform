@@ -11,7 +11,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, showApply = true }: ProjectCardProps) {
   return (
-    <div className="card p-5 flex flex-col gap-3 hover:shadow-md transition-shadow">
+    <div className="card card-hover p-5 flex flex-col gap-3">
       {/* Professor info */}
       {project.professor && (
         <div className="flex items-center gap-2">

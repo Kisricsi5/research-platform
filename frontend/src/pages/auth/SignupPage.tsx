@@ -86,17 +86,22 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="relative min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 overflow-hidden">
+      <div aria-hidden className="absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#f6f8fd_0%,#f9fafb_70%)]" />
+        <div className="absolute -top-24 right-1/4 w-[480px] h-[480px] rounded-full bg-primary-100/50 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(#dbe3f3_1px,transparent_1px)] [background-size:28px_28px] opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
+      </div>
+      <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="bg-primary-600 rounded-lg p-2">
+            <div className="bg-primary-600 rounded-lg p-2 shadow-[0_4px_12px_-2px_rgba(37,99,235,.4)]">
               <FlaskConical className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl text-gray-900">ResearchBridge</span>
+            <span className="font-bold text-xl text-ink-900 tracking-tight">ResearchBridge</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-          <p className="text-gray-500 mt-1">Join the research community</p>
+          <h1 className="display text-3xl">Create your account</h1>
+          <p className="text-gray-500 mt-2">Join the research community</p>
         </div>
 
         <div className="card p-8">

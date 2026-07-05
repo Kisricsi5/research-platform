@@ -9,7 +9,7 @@ interface ProfessorCardProps {
 
 export default function ProfessorCard({ professor }: ProfessorCardProps) {
   return (
-    <div className="card p-5 flex flex-col gap-4 hover:shadow-md transition-shadow">
+    <div className="card card-hover p-5 flex flex-col gap-4">
       <div className="flex items-start gap-3">
         <Avatar
           firstName={professor.firstName}
