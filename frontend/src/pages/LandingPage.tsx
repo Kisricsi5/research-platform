@@ -89,7 +89,7 @@ export default function LandingPage() {
         <div aria-hidden className="absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#f6f8fd_0%,#ffffff_60%)]" />
           <div className="absolute -top-32 right-0 w-[640px] h-[640px] rounded-full bg-primary-100/40 blur-3xl" />
-          <div className="absolute top-40 -left-40 w-[480px] h-[480px] rounded-full bg-teal-50 blur-3xl" />
+          <div className="absolute top-40 -left-40 w-[480px] h-[480px] rounded-full bg-emerald-50 blur-3xl" />
           <div className="absolute inset-0 bg-[radial-gradient(#dbe3f3_1px,transparent_1px)] [background-size:28px_28px] opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_75%)]" />
         </div>
 
@@ -287,7 +287,7 @@ export default function LandingPage() {
             {/* Researchers */}
             <div className="card p-8 sm:p-10">
               <div className="flex items-center gap-3 mb-8">
-                <div className="bg-teal-600 rounded-xl p-2.5 shadow-[0_4px_12px_-2px_rgba(13,148,136,.4)]">
+                <div className="bg-emerald-600 rounded-xl p-2.5 shadow-[0_4px_12px_-2px_rgba(16,185,129,.4)]">
                   <BookOpen className="h-5 w-5 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-ink-900">For researchers & labs</h3>
@@ -299,7 +299,7 @@ export default function LandingPage() {
                   { t: 'Build your research team', d: 'Shortlist, request interviews, and accept — all in one pipeline.' },
                 ].map((s, i) => (
                   <li key={s.t} className="flex gap-4">
-                    <span className="h-8 w-8 shrink-0 rounded-full bg-teal-50 text-teal-700 ring-1 ring-teal-600/15 flex items-center justify-center text-sm font-bold">
+                    <span className="h-8 w-8 shrink-0 rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/15 flex items-center justify-center text-sm font-bold">
                       {i + 1}
                     </span>
                     <div>
@@ -311,7 +311,7 @@ export default function LandingPage() {
               </ol>
               <Link
                 to="/signup?role=professor"
-                className="btn mt-9 bg-teal-600 text-white px-4 py-2 text-sm shadow-[0_1px_2px_rgba(13,148,136,.35)] hover:bg-teal-700 hover:-translate-y-px active:translate-y-0 focus-visible:ring-teal-500"
+                className="btn mt-9 bg-emerald-600 text-white px-4 py-2 text-sm shadow-[0_1px_2px_rgba(16,185,129,.35)] hover:bg-emerald-700 hover:-translate-y-px active:translate-y-0 focus-visible:ring-emerald-500"
               >
                 Post your first opportunity <ArrowRight className="h-4 w-4" />
               </Link>
@@ -374,7 +374,7 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-ink-950">
         <div aria-hidden className="absolute inset-0">
           <div className="absolute -top-24 left-1/4 w-[500px] h-[500px] rounded-full bg-primary-600/20 blur-3xl" />
-          <div className="absolute -bottom-32 right-1/4 w-[400px] h-[400px] rounded-full bg-teal-500/10 blur-3xl" />
+          <div className="absolute -bottom-32 right-1/4 w-[400px] h-[400px] rounded-full bg-emerald-500/10 blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
           <h2 className="display text-3xl sm:text-5xl text-white mb-5">
