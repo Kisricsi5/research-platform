@@ -180,8 +180,11 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-4 space-y-2">
-          <Link to="/professors" onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700">Browse Professors</Link>
-          <Link to="/projects" onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700">Browse Projects</Link>
+          <Link to="/projects" onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700 font-medium">Opportunities</Link>
+          <Link to="/professors" onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700 font-medium">Researchers</Link>
+          {!user && (
+            <Link to="/#how-it-works" onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700 font-medium">How it works</Link>
+          )}
           {user ? (
             <>
               <Link to={dashboardPath} onClick={() => setMenuOpen(false)} className="block py-2 text-sm text-gray-700">Dashboard</Link>

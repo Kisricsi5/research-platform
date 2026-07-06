@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FlaskConical, Twitter, Linkedin, Github, Mail } from 'lucide-react';
+import { FlaskConical, Mail } from 'lucide-react';
 
 const columns = [
   {
@@ -22,10 +22,9 @@ const columns = [
   {
     heading: 'Company',
     links: [
-      { label: 'About', to: '#' },
-      { label: 'Contact', to: '#' },
-      { label: 'Privacy Policy', to: '#' },
-      { label: 'Terms of Service', to: '#' },
+      { label: 'About', to: '/about' },
+      { label: 'Privacy Policy', to: '/privacy' },
+      { label: 'Terms of Service', to: '/terms' },
     ],
   },
 ];
@@ -47,21 +46,13 @@ export default function Footer() {
               find their next great researcher.
             </p>
             <div className="flex gap-3 mt-6">
-              {[
-                { icon: Twitter, label: 'Twitter' },
-                { icon: Linkedin, label: 'LinkedIn' },
-                { icon: Github, label: 'GitHub' },
-                { icon: Mail, label: 'Email' },
-              ].map(({ icon: Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
+              <a
+                href="mailto:peocz55@gmail.com"
+                aria-label="Email us"
+                className="inline-flex items-center gap-2 p-2 pr-3 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors text-sm"
+              >
+                <Mail className="h-4 w-4" /> Contact us
+              </a>
             </div>
           </div>
 

@@ -1,10 +1,14 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import { AboutPage, PrivacyPage, TermsPage } from './pages/static/StaticPages';
 import BrowseProfessorsPage from './pages/shared/BrowseProfessorsPage';
 import BrowseProjectsPage from './pages/shared/BrowseProjectsPage';
 import ProfessorPublicProfilePage from './pages/shared/ProfessorProfilePage';
@@ -25,6 +29,22 @@ import ApplicationsManagementPage from './pages/professor/ApplicationsManagement
 import ApplicationDetailPage from './pages/professor/ApplicationDetailPage';
 import { PageSpinner } from './components/ui/Spinner';
 
+// Scroll to hash targets (e.g. /#how-it-works) and to top on route change
+function ScrollManager() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [pathname, hash]);
+  return null;
+}
+
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'STUDENT' | 'PROFESSOR' }) {
   const { user, loading } = useAuth();
   if (loading) return <PageSpinner />;
@@ -43,6 +63,11 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={user ? <Navigate to={user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard'} /> : <LoginPage />} />
       <Route path="/signup" element={user ? <Navigate to={user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard'} /> : <SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
       <Route path="/professors" element={<BrowseProfessorsPage />} />
       <Route path="/professors/:id" element={<ProfessorPublicProfilePage />} />
       <Route path="/projects" element={<BrowseProjectsPage />} />
@@ -74,6 +99,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
+      <ScrollManager />
       <AppRoutes />
     </AuthProvider>
   );
