@@ -8,6 +8,7 @@ import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 import { AboutPage, PrivacyPage, TermsPage } from './pages/static/StaticPages';
 import BrowseProfessorsPage from './pages/shared/BrowseProfessorsPage';
 import BrowseProjectsPage from './pages/shared/BrowseProjectsPage';
@@ -65,6 +66,7 @@ function AppRoutes() {
       <Route path="/signup" element={user ? <Navigate to={user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard'} /> : <SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
