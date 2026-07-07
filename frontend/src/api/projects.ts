@@ -2,7 +2,7 @@ import api from './client';
 import { ResearchProject, PaginatedResponse } from '../types';
 
 export const projectsApi = {
-  list: (params?: { q?: string; compensationType?: string; page?: number; limit?: number }) =>
+  list: (params?: { q?: string; compensationType?: string; university?: string; page?: number; limit?: number }) =>
     api.get<PaginatedResponse<ResearchProject>>('/projects', { params }).then((r) => r.data),
 
   getById: (id: string) =>

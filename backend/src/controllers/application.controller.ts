@@ -44,6 +44,24 @@ export async function submitApplication(req: AuthRequest, res: Response): Promis
     return;
   }
 
+  // Enforce same-university restriction on restricted postings
+  if (data.projectId) {
+    const project = await prisma.researchProject.findUnique({
+      where: { id: data.projectId },
+      select: { openToOtherUniversities: true },
+    });
+    if (
+      project &&
+      !project.openToOtherUniversities &&
+      studentProfile.university.trim().toLowerCase() !== professor.university.trim().toLowerCase()
+    ) {
+      res.status(403).json({
+        error: `This position only accepts applications from students at ${professor.university}.`,
+      });
+      return;
+    }
+  }
+
   const application = await prisma.application.create({
     data: {
       studentId: studentProfile.id,

@@ -119,6 +119,7 @@ model ResearchProject {
   duration            String?
   compensationType    CompensationType @default(UNPAID)
   applicationDeadline DateTime?
+  openToOtherUniversities Boolean      @default(true)
   isActive            Boolean          @default(true)
   isFilled            Boolean          @default(false)
   createdAt           DateTime         @default(now())

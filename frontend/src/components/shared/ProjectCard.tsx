@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Clock, Calendar, DollarSign } from 'lucide-react';
+import { Clock, Calendar, DollarSign, Building2 } from 'lucide-react';
 import { ResearchProject } from '../../types';
 import { compensationLabels, compensationColors, formatDate } from '../../utils';
 import Avatar from '../ui/Avatar';
@@ -42,8 +42,11 @@ export default function ProjectCard({ project, showApply = true }: ProjectCardPr
       </div>
 
       {/* Skills */}
-      {project.requiredSkills.length > 0 && (
+      {(project.requiredSkills.length > 0 || project.openToOtherUniversities === false) && (
         <div className="flex flex-wrap gap-1.5">
+          {project.openToOtherUniversities === false && (
+            <span className="badge-ink"><Building2 className="h-3 w-3" />Same university only</span>
+          )}
           {project.requiredSkills.slice(0, 4).map((s) => (
             <span key={s} className="badge-gray">{s}</span>
           ))}

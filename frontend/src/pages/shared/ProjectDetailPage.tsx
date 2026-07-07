@@ -2,7 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   ArrowLeft, Clock, Calendar, DollarSign, GraduationCap, Users,
-  CalendarRange, ShieldCheck, ArrowRight,
+  CalendarRange, ShieldCheck, ArrowRight, Building2,
 } from 'lucide-react';
 import { projectsApi } from '../../api/projects';
 import Layout from '../../components/layout/Layout';
@@ -43,12 +43,27 @@ export default function ProjectDetailPage() {
   }
 
   const isExpired = project.applicationDeadline && new Date(project.applicationDeadline) < new Date();
-  const canApply = user?.role === 'STUDENT' && project.isActive && !isExpired;
+  const restricted = project.openToOtherUniversities === false;
+  const studentUniversity =
+    user?.role === 'STUDENT' && user.profile && 'university' in user.profile
+      ? (user.profile as { university?: string }).university
+      : undefined;
+  const universityMismatch =
+    restricted &&
+    !!studentUniversity &&
+    !!project.professor &&
+    studentUniversity.trim().toLowerCase() !== project.professor.university.trim().toLowerCase();
+  const canApply = user?.role === 'STUDENT' && project.isActive && !isExpired && !universityMismatch;
 
   const facts = [
     project.hoursPerWeek && { icon: Clock, label: 'Time commitment', value: `${project.hoursPerWeek} hours/week` },
     project.duration && { icon: CalendarRange, label: 'Duration', value: project.duration },
     { icon: DollarSign, label: 'Compensation', value: compensationLabels[project.compensationType] },
+    restricted && project.professor && {
+      icon: Building2,
+      label: 'Eligibility',
+      value: `${project.professor.university} students only`,
+    },
     project.applicationDeadline && {
       icon: Calendar,
       label: 'Application deadline',
@@ -77,6 +92,9 @@ export default function ProjectDetailPage() {
               <span className="badge-emerald"><ShieldCheck className="h-3 w-3" />Accepting applications</span>
             ) : (
               <span className="badge-gray">Closed</span>
+            )}
+            {restricted && project.professor && (
+              <span className="badge-ink"><Building2 className="h-3 w-3" />{project.professor.university} students only</span>
             )}
           </div>
 
@@ -207,7 +225,11 @@ export default function ProjectDetailPage() {
                   </>
                 ) : user.role === 'STUDENT' ? (
                   <p className="text-sm text-gray-500 text-center">
-                    {isExpired ? 'The application deadline has passed.' : 'This position is no longer accepting applications.'}
+                    {universityMismatch && project.professor
+                      ? `This position only accepts students from ${project.professor.university}.`
+                      : isExpired
+                        ? 'The application deadline has passed.'
+                        : 'This position is no longer accepting applications.'}
                   </p>
                 ) : null}
               </div>

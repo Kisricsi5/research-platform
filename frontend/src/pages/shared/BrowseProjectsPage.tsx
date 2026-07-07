@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, X, BookOpen } from 'lucide-react';
+import { Search, X, BookOpen, Building2 } from 'lucide-react';
 import { projectsApi } from '../../api/projects';
 import Layout from '../../components/layout/Layout';
 import ProjectCard from '../../components/shared/ProjectCard';
 import EmptyState from '../../components/ui/EmptyState';
 import { SkeletonGrid } from '../../components/ui/Skeleton';
+import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils';
 
 const COMPENSATION_FILTERS = [
@@ -17,18 +18,32 @@ const COMPENSATION_FILTERS = [
 ];
 
 export default function BrowseProjectsPage() {
+  const { user } = useAuth();
   const [q, setQ] = useState('');
   const [compensationType, setCompensationType] = useState('');
+  const [myUniversityOnly, setMyUniversityOnly] = useState(false);
   const [page, setPage] = useState(1);
 
+  const studentUniversity =
+    user?.role === 'STUDENT' && user.profile && 'university' in user.profile
+      ? (user.profile as { university?: string }).university
+      : undefined;
+
   const { data, isLoading } = useQuery({
-    queryKey: ['projects', q, compensationType, page],
-    queryFn: () => projectsApi.list({ q, compensationType: compensationType || undefined, page, limit: 12 }),
+    queryKey: ['projects', q, compensationType, myUniversityOnly ? studentUniversity : '', page],
+    queryFn: () =>
+      projectsApi.list({
+        q,
+        compensationType: compensationType || undefined,
+        university: myUniversityOnly && studentUniversity ? studentUniversity : undefined,
+        page,
+        limit: 12,
+      }),
     placeholderData: (prev) => prev,
   });
 
-  const clearFilters = () => { setQ(''); setCompensationType(''); setPage(1); };
-  const hasFilters = q || compensationType;
+  const clearFilters = () => { setQ(''); setCompensationType(''); setMyUniversityOnly(false); setPage(1); };
+  const hasFilters = q || compensationType || myUniversityOnly;
 
   return (
     <Layout>
@@ -74,6 +89,24 @@ export default function BrowseProjectsPage() {
                 {f.label}
               </button>
             ))}
+            {studentUniversity && (
+              <>
+                <span className="mx-1 h-4 w-px bg-gray-300" aria-hidden />
+                <button
+                  onClick={() => { setMyUniversityOnly(!myUniversityOnly); setPage(1); }}
+                  aria-pressed={myUniversityOnly}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150 ring-1 ring-inset',
+                    myUniversityOnly
+                      ? 'bg-ink-900 text-white ring-ink-900 shadow-sm'
+                      : 'bg-white text-gray-600 ring-gray-300 hover:ring-gray-400 hover:text-gray-900',
+                  )}
+                >
+                  <Building2 className="h-3.5 w-3.5" />
+                  My university only
+                </button>
+              </>
+            )}
             {hasFilters && (
               <button onClick={clearFilters} className="btn-ghost btn-sm gap-1 text-gray-500">
                 <X className="h-3.5 w-3.5" />Clear all
