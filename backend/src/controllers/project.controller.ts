@@ -15,6 +15,7 @@ const projectSchema = z.object({
   duration: z.string().max(100).optional().nullable(),
   compensationType: z.enum(['UNPAID', 'PAID', 'CREDIT', 'STIPEND']).default('UNPAID'),
   applicationDeadline: z.string().datetime().optional().nullable().or(z.literal('')),
+  openToOtherUniversities: z.boolean().default(true),
   isActive: z.boolean().default(true),
 });
 
@@ -119,6 +120,15 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
 
   if (query.compensationType) {
     where.compensationType = query.compensationType;
+  }
+
+  if (query.university) {
+    // "My university only": projects from this university that any student may
+    // see, i.e. all of that university's postings (restricted ones included,
+    // since the requester belongs to it).
+    where.professor = {
+      university: { equals: query.university, mode: 'insensitive' },
+    };
   }
 
   const [projects, total] = await Promise.all([

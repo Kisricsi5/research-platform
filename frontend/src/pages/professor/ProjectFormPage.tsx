@@ -19,6 +19,7 @@ const schema = z.object({
   duration: z.string().max(100).optional(),
   compensationType: z.enum(['UNPAID', 'PAID', 'CREDIT', 'STIPEND']),
   applicationDeadline: z.string().optional(),
+  openToOtherUniversities: z.boolean(),
   isActive: z.boolean(),
 });
 type FormData = z.infer<typeof schema>;
@@ -42,7 +43,7 @@ export default function ProjectFormPage() {
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { compensationType: 'UNPAID', isActive: true },
+    defaultValues: { compensationType: 'UNPAID', isActive: true, openToOtherUniversities: true },
   });
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function ProjectFormPage() {
         duration: existing.duration ?? '',
         compensationType: existing.compensationType,
         applicationDeadline: existing.applicationDeadline ? existing.applicationDeadline.slice(0, 10) : '',
+        openToOtherUniversities: existing.openToOtherUniversities ?? true,
         isActive: existing.isActive,
       });
       setSkills(existing.requiredSkills);
@@ -198,11 +200,22 @@ export default function ProjectFormPage() {
             </div>
           </div>
 
-          <div className="card p-4 flex items-center gap-3">
-            <input {...register('isActive')} type="checkbox" id="active" className="rounded border-gray-300 text-primary-600 w-4 h-4" />
-            <label htmlFor="active" className="text-sm text-gray-700">
-              <span className="font-medium">Currently accepting applications</span>
-            </label>
+          <div className="card p-4 space-y-4">
+            <div className="flex items-start gap-3">
+              <input {...register('isActive')} type="checkbox" id="active" className="rounded border-gray-300 text-primary-600 w-4 h-4 mt-0.5" />
+              <label htmlFor="active" className="text-sm text-gray-700">
+                <span className="font-medium">Currently accepting applications</span>
+              </label>
+            </div>
+            <div className="flex items-start gap-3 pt-4 border-t border-gray-100">
+              <input {...register('openToOtherUniversities')} type="checkbox" id="openToOther" className="rounded border-gray-300 text-primary-600 w-4 h-4 mt-0.5" />
+              <label htmlFor="openToOther" className="text-sm text-gray-700">
+                <span className="font-medium">Accept students from other universities</span>
+                <span className="block text-xs text-gray-500 mt-0.5">
+                  Uncheck to only accept applications from students at your own university.
+                </span>
+              </label>
+            </div>
           </div>
 
           <div className="flex gap-3">

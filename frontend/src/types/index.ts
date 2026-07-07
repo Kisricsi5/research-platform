@@ -72,6 +72,7 @@ export interface ResearchProject {
   duration?: string | null;
   compensationType: CompensationType;
   applicationDeadline?: string | null;
+  openToOtherUniversities?: boolean;
   isActive: boolean;
   isFilled: boolean;
   _count?: { applications: number };

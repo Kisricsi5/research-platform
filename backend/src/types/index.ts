@@ -29,4 +29,5 @@ export interface ProjectSearchQuery extends PaginationQuery {
   major?: string;
   compensationType?: string;
   isActive?: string;
+  university?: string;
 }
