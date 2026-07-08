@@ -4,6 +4,7 @@ import { prisma } from '../config/prisma';
 import { AuthRequest } from '../types';
 import { getPagination, buildPaginationMeta } from '../utils/pagination';
 import { ProfessorSearchQuery } from '../types';
+import { analyzeFit, isAiConfigured } from '../utils/aiFit';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -204,6 +205,63 @@ export async function getApplicationById(req: AuthRequest, res: Response): Promi
   }
 
   res.json(app);
+}
+
+/**
+ * AI applicant-fit analysis for a single application (professor decision-support).
+ * Returns 503 when AI is not configured so the UI can hide the feature cleanly.
+ */
+export async function analyzeApplicationFit(req: AuthRequest, res: Response): Promise<void> {
+  if (!isAiConfigured()) {
+    res.status(503).json({ error: 'AI analysis is not enabled on this instance.' });
+    return;
+  }
+
+  const profile = await prisma.professorProfile.findUnique({ where: { userId: req.user!.userId } });
+  if (!profile) {
+    res.status(404).json({ error: 'Profile not found' });
+    return;
+  }
+
+  const app = await prisma.application.findFirst({
+    where: { id: req.params.id, professorId: profile.id },
+    include: { student: true, project: true },
+  });
+  if (!app) {
+    res.status(404).json({ error: 'Application not found' });
+    return;
+  }
+  if (!app.project) {
+    res.status(400).json({ error: 'This application is not tied to a specific project, so fit analysis is unavailable.' });
+    return;
+  }
+
+  try {
+    const result = await analyzeFit({
+      project: {
+        title: app.project.title,
+        description: app.project.description,
+        requiredSkills: app.project.requiredSkills,
+        preferredMajors: app.project.preferredMajors,
+        preferredYear: app.project.preferredYear,
+      },
+      student: {
+        major: app.student.major,
+        university: app.student.university,
+        graduationYear: app.student.graduationYear,
+        gpa: app.student.gpa,
+        skills: app.student.skills,
+        researchInterests: app.student.researchInterests,
+        bio: app.student.bio,
+      },
+      coverLetter: app.coverLetter,
+      availability: app.availability,
+    });
+    res.json(result);
+  } catch (err) {
+    console.error('AI fit analysis failed:', err);
+    res.status(502).json({ error: 'AI analysis is temporarily unavailable. Please try again.' });
+  }
 }
 
 export async function updateApplicationStatus(req: AuthRequest, res: Response): Promise<void> {

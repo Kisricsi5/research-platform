@@ -64,6 +64,11 @@ app.use('/api', publicRoutes);
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
+// Public feature flags (no secrets exposed — booleans only)
+app.get('/api/config', (_req, res) => {
+  res.json({ aiFitAnalysis: typeof process.env.ANTHROPIC_API_KEY === 'string' && process.env.ANTHROPIC_API_KEY.length > 0 });
+});
+
 // Debug: what does the process actually see for DATABASE_URL? (safe - no password)
 app.get('/health/env', (_req, res) => {
   const raw = process.env.DATABASE_URL;

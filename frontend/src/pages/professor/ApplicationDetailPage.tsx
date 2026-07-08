@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Download, GraduationCap, BookOpen } from 'lucide-react';
+import { ArrowLeft, Download, GraduationCap, BookOpen, Sparkles, CheckCircle2, AlertCircle, MessageCircleQuestion } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { applicationsApi } from '../../api/applications';
+import { applicationsApi, configApi, FitAnalysis } from '../../api/applications';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Spinner from '../../components/ui/Spinner';
 import Avatar from '../../components/ui/Avatar';
 import { statusLabels, statusColors, formatDate } from '../../utils';
 import { ApplicationStatus } from '../../types';
+
+const fitStyles: Record<FitAnalysis['fitLevel'], string> = {
+  Strong: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+  Moderate: 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  Limited: 'bg-gray-100 text-gray-600 ring-gray-500/15',
+};
 
 const STATUS_OPTIONS: ApplicationStatus[] = [
   'PENDING', 'UNDER_REVIEW', 'ACCEPTED', 'REJECTED', 'INTERVIEW_REQUESTED',
@@ -28,6 +34,20 @@ export default function ApplicationDetailPage() {
 
   const [notes, setNotes] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus>('PENDING');
+  const [fit, setFit] = useState<FitAnalysis | null>(null);
+
+  const { data: config } = useQuery({
+    queryKey: ['config'],
+    queryFn: configApi.get,
+    staleTime: Infinity,
+  });
+
+  const analyzeMutation = useMutation({
+    mutationFn: () => applicationsApi.analyzeFit(id!),
+    onSuccess: (data) => setFit(data),
+    onError: (err: any) =>
+      toast.error(err?.response?.data?.error || 'AI analysis is temporarily unavailable.'),
+  });
 
   const updateMutation = useMutation({
     mutationFn: () =>
@@ -146,6 +166,91 @@ export default function ApplicationDetailPage() {
               </div>
             )}
           </div>
+
+          {/* AI fit analysis (decision-support) */}
+          {config?.aiFitAnalysis && app.project && (
+            <div className="card p-5">
+              <div className="flex items-start justify-between gap-4 mb-1">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-primary-50 ring-1 ring-primary-600/10 flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-primary-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 leading-tight">AI fit analysis</h3>
+                    <p className="text-xs text-gray-500">Guidance only — you make the final decision</p>
+                  </div>
+                </div>
+                {!fit && (
+                  <button
+                    onClick={() => analyzeMutation.mutate()}
+                    disabled={analyzeMutation.isPending}
+                    className="btn-primary btn-sm shrink-0"
+                  >
+                    {analyzeMutation.isPending ? (
+                      <><Spinner className="h-3.5 w-3.5 text-white" /> Analyzing…</>
+                    ) : (
+                      <><Sparkles className="h-3.5 w-3.5" /> Analyze fit</>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {fit && (
+                <div className="mt-4 space-y-5">
+                  <div className="flex items-center gap-3">
+                    <span className={`badge ring-1 ${fitStyles[fit.fitLevel]}`}>{fit.fitLevel} fit</span>
+                    <button onClick={() => analyzeMutation.mutate()} disabled={analyzeMutation.isPending} className="text-xs text-gray-500 hover:text-gray-800">
+                      {analyzeMutation.isPending ? 'Re-analyzing…' : 'Re-run'}
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed">{fit.summary}</p>
+
+                  {fit.strengths.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Strengths</p>
+                      <ul className="space-y-1.5">
+                        {fit.strengths.map((s, i) => (
+                          <li key={i} className="flex gap-2 text-sm text-gray-700">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />{s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {fit.gaps.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Gaps to probe</p>
+                      <ul className="space-y-1.5">
+                        {fit.gaps.map((s, i) => (
+                          <li key={i} className="flex gap-2 text-sm text-gray-700">
+                            <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />{s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {fit.suggestedQuestions.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Suggested interview questions</p>
+                      <ul className="space-y-1.5">
+                        {fit.suggestedQuestions.map((s, i) => (
+                          <li key={i} className="flex gap-2 text-sm text-gray-700">
+                            <MessageCircleQuestion className="h-4 w-4 text-primary-500 shrink-0 mt-0.5" />{s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-gray-400 border-t border-gray-100 pt-3">
+                    AI-generated from this application and the position's requirements. It can make mistakes — treat it as a starting point, not a decision.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Actions */}
           <div className="card p-5">

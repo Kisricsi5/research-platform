@@ -1,6 +1,14 @@
 import api from './client';
 import { Application, PaginatedResponse } from '../types';
 
+export interface FitAnalysis {
+  fitLevel: 'Strong' | 'Moderate' | 'Limited';
+  summary: string;
+  strengths: string[];
+  gaps: string[];
+  suggestedQuestions: string[];
+}
+
 export const applicationsApi = {
   // Student
   submit: (data: { professorId: string; projectId?: string | null; coverLetter: string; availability?: string }) =>
@@ -21,4 +29,11 @@ export const applicationsApi = {
 
   updateStatus: (id: string, data: { status: string; professorNotes?: string }) =>
     api.put<Application>(`/professor/applications/${id}/status`, data).then((r) => r.data),
+
+  analyzeFit: (id: string) =>
+    api.post<FitAnalysis>(`/professor/applications/${id}/analyze`).then((r) => r.data),
+};
+
+export const configApi = {
+  get: () => api.get<{ aiFitAnalysis: boolean }>('/config').then((r) => r.data),
 };
