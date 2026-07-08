@@ -20,6 +20,7 @@ router.delete('/projects/:id', project.deleteProject);
 
 router.get('/applications', professor.getReceivedApplications);
 router.get('/applications/:id', professor.getApplicationById);
+router.post('/applications/:id/analyze', professor.analyzeApplicationFit);
 router.put('/applications/:id/status', professor.updateApplicationStatus);
 
 export default router;
