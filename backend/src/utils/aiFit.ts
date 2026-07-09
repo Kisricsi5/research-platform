@@ -15,7 +15,7 @@ export interface FitInput {
     description: string;
     requiredSkills: string[];
     preferredMajors: string[];
-    preferredYear?: string | null;
+    preferredYears?: string[];
   };
   student: {
     major: string;
@@ -61,7 +61,7 @@ Title: ${project.title}
 Description: ${project.description}
 Required skills: ${project.requiredSkills.join(', ') || 'None specified'}
 Preferred majors: ${project.preferredMajors.join(', ') || 'None specified'}
-Preferred year: ${project.preferredYear || 'Any'}
+Preferred years: ${project.preferredYears?.join(', ') || 'Any'}
 
 ## APPLICANT
 Major: ${student.major}
