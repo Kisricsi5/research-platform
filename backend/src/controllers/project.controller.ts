@@ -10,7 +10,7 @@ const projectSchema = z.object({
   description: z.string().min(10).max(5000),
   requiredSkills: z.array(z.string()).default([]),
   preferredMajors: z.array(z.string()).default([]),
-  preferredYear: z.enum(['freshman', 'sophomore', 'junior', 'senior', 'graduate', 'any']).optional().nullable(),
+  preferredYears: z.array(z.enum(['freshman', 'sophomore', 'junior', 'senior', 'graduate'])).default([]),
   hoursPerWeek: z.coerce.number().int().min(1).max(60).optional().nullable(),
   duration: z.string().max(100).optional().nullable(),
   compensationType: z.enum(['UNPAID', 'PAID', 'CREDIT', 'STIPEND']).default('UNPAID'),

@@ -4,11 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Upload, X, Plus } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { studentsApi } from '../../api/students';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Spinner from '../../components/ui/Spinner';
+import TagPicker from '../../components/ui/TagPicker';
+import { COMMON_SKILLS, COMMON_RESEARCH_INTERESTS } from '../../data/suggestions';
 import { useAuth } from '../../context/AuthContext';
 
 const schema = z.object({
@@ -28,8 +30,6 @@ export default function StudentProfilePage() {
   const queryClient = useQueryClient();
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState('');
-  const [interestInput, setInterestInput] = useState('');
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['student-profile'],
@@ -76,16 +76,6 @@ export default function StudentProfilePage() {
     },
     onError: (err: any) => toast.error(err.response?.data?.error || 'Upload failed'),
   });
-
-  const addTag = (value: string, list: string[], setter: (v: string[]) => void, inputSetter: (v: string) => void) => {
-    const trimmed = value.trim();
-    if (trimmed && !list.includes(trimmed)) setter([...list, trimmed]);
-    inputSetter('');
-  };
-
-  const removeTag = (value: string, list: string[], setter: (v: string[]) => void) => {
-    setter(list.filter((v) => v !== value));
-  };
 
   if (isLoading) return <DashboardLayout><PageSpinner /></DashboardLayout>;
 
@@ -142,56 +132,28 @@ export default function StudentProfilePage() {
 
           {/* Skills */}
           <div className="card p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Skills</h2>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {skills.map((s) => (
-                <span key={s} className="badge-blue flex items-center gap-1">
-                  {s}
-                  <button type="button" onClick={() => removeTag(s, skills, setSkills)} className="hover:text-blue-900">
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(skillInput, skills, setSkills, setSkillInput); } }}
-                className="input flex-1"
-                placeholder="Add a skill (e.g., Python, PCR)..."
-              />
-              <button type="button" onClick={() => addTag(skillInput, skills, setSkills, setSkillInput)} className="btn-secondary gap-1">
-                <Plus className="h-4 w-4" />Add
-              </button>
-            </div>
+            <h2 className="font-semibold text-gray-900 mb-1">Skills</h2>
+            <p className="helper mb-4">Start typing to pick from common research skills, or add your own.</p>
+            <TagPicker
+              selected={skills}
+              onChange={setSkills}
+              suggestions={COMMON_SKILLS}
+              placeholder="e.g. Python, PCR, Data Analysis…"
+              badgeClass="badge-blue"
+            />
           </div>
 
           {/* Research Interests */}
           <div className="card p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Research Interests</h2>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {interests.map((i) => (
-                <span key={i} className="badge-green flex items-center gap-1">
-                  {i}
-                  <button type="button" onClick={() => removeTag(i, interests, setInterests)} className="hover:text-emerald-900">
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input
-                value={interestInput}
-                onChange={(e) => setInterestInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(interestInput, interests, setInterests, setInterestInput); } }}
-                className="input flex-1"
-                placeholder="Add a research interest..."
-              />
-              <button type="button" onClick={() => addTag(interestInput, interests, setInterests, setInterestInput)} className="btn-secondary gap-1">
-                <Plus className="h-4 w-4" />Add
-              </button>
-            </div>
+            <h2 className="font-semibold text-gray-900 mb-1">Research Interests</h2>
+            <p className="helper mb-4">Fields you'd love to work in — pick from the list or add your own.</p>
+            <TagPicker
+              selected={interests}
+              onChange={setInterests}
+              suggestions={COMMON_RESEARCH_INTERESTS}
+              placeholder="e.g. Neuroscience, Machine Learning…"
+              badgeClass="badge-green"
+            />
           </div>
 
           {/* Visibility */}
