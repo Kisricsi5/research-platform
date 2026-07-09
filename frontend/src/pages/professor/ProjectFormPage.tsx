@@ -77,7 +77,7 @@ export default function ProjectFormPage() {
       toast.success('Project created!');
       navigate('/professor/projects');
     },
-    onError: () => toast.error('Failed to create project'),
+    onError: (err: any) => toast.error(err.response?.data?.error || 'Failed to create project'),
   });
 
   const updateMutation = useMutation({

@@ -18,8 +18,21 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
+// Academic domains: name@x.edu, name@x.edu.au, name@x.ac.uk, etc.
+function isAcademicEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase() ?? '';
+  return /(^|\.)edu(\.[a-z]{2,3})?$/.test(domain) || /(^|\.)ac\.[a-z]{2,3}$/.test(domain);
+}
+
 export async function signup(req: Request, res: Response): Promise<void> {
   const { email, password, role } = signupSchema.parse(req.body);
+
+  if (role === 'PROFESSOR' && !isAcademicEmail(email)) {
+    res.status(400).json({
+      error: 'Professor accounts require a university email address (e.g. name@university.edu).',
+    });
+    return;
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -123,6 +136,30 @@ export async function verifyEmail(req: Request, res: Response): Promise<void> {
   });
 
   res.json({ message: 'Email verified successfully' });
+}
+
+export async function resendVerification(req: AuthRequest, res: Response): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { id: req.user!.userId } });
+  if (!user) {
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+  if (user.emailVerified) {
+    res.status(400).json({ error: 'Your email is already verified.' });
+    return;
+  }
+
+  const verificationToken = uuidv4();
+  await prisma.user.update({ where: { id: user.id }, data: { verificationToken } });
+
+  try {
+    await sendVerificationEmail(user.email, verificationToken);
+  } catch {
+    res.status(502).json({ error: 'Could not send the email right now. Please try again shortly.' });
+    return;
+  }
+
+  res.json({ message: 'Verification email sent. Check your inbox (and spam folder).' });
 }
 
 export async function forgotPassword(req: Request, res: Response): Promise<void> {
