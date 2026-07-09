@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FlaskConical, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Spinner from '../../components/ui/Spinner';
+import { sleep } from '../../utils';
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -14,63 +15,36 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-const RETRY_DELAY = 8;
+const MAX_ATTEMPTS = 3;
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [waking, setWaking] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-  const pendingData = useRef<FormData | null>(null);
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => () => { if (countdownRef.current) clearInterval(countdownRef.current); }, []);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const attemptLogin = async (data: FormData) => {
-    const user = await login(data.email, data.password);
-    navigate(user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard');
-  };
-
-  const startRetryCountdown = (data: FormData) => {
-    pendingData.current = data;
-    setWaking(true);
-    setCountdown(RETRY_DELAY);
-    countdownRef.current = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(countdownRef.current!);
-          setWaking(false);
-          attemptLogin(data).catch(err => {
-            if (err.request) {
-              toast.error('Backend is still starting up. Please try again in a moment.');
-            } else if (err.response) {
-              toast.error(err.response.data?.error || `Server error: ${err.response.status}`);
-            } else {
-              toast.error(err.message || 'Login failed');
-            }
-          });
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
+  // Network blips are retried silently while the button spinner runs;
+  // the user only ever sees a toast if every attempt fails.
   const onSubmit = async (data: FormData) => {
-    try {
-      await attemptLogin(data);
-    } catch (err: any) {
-      if (err.response) {
-        toast.error(err.response.data?.error || `Server error: ${err.response.status}`);
-      } else if (err.request) {
-        startRetryCountdown(data);
-      } else {
-        toast.error(err.message || 'Login failed');
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const user = await login(data.email, data.password);
+        navigate(user.role === 'STUDENT' ? '/student/dashboard' : '/professor/dashboard');
+        return;
+      } catch (err: any) {
+        if (err.response) {
+          toast.error(err.response.data?.error || `Server error: ${err.response.status}`);
+          return;
+        }
+        if (err.request && attempt < MAX_ATTEMPTS) {
+          await sleep(1500 * attempt);
+          continue;
+        }
+        toast.error(err.request ? 'Unable to reach the server. Please try again.' : err.message || 'Login failed');
+        return;
       }
     }
   };
@@ -129,16 +103,9 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <button type="submit" disabled={isSubmitting || waking} className="btn-primary btn-lg w-full justify-center">
+            <button type="submit" disabled={isSubmitting} className="btn-primary btn-lg w-full justify-center">
               {isSubmitting ? <Spinner className="h-4 w-4 text-white" /> : 'Sign in'}
             </button>
-
-            {waking && (
-              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-center">
-                <p className="text-sm font-medium text-amber-800">Backend is waking up...</p>
-                <p className="text-xs text-amber-600 mt-0.5">Retrying automatically in {countdown}s</p>
-              </div>
-            )}
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
