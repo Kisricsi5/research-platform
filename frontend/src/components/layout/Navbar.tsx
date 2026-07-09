@@ -40,7 +40,7 @@ export default function Navbar() {
             <div className="bg-primary-600 rounded-lg p-1.5 shadow-[0_2px_8px_-2px_rgba(37,99,235,.5)] transition-transform duration-200 group-hover:scale-105">
               <FlaskConical className="h-5 w-5 text-white" />
             </div>
-            <span className="font-bold text-ink-900 text-lg tracking-tight">ResearchBridge</span>
+            <span className="font-bold text-ink-900 text-lg tracking-tight">Labyro</span>
           </Link>
 
           {/* Desktop nav */}

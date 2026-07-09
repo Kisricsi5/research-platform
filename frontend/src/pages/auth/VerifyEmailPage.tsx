@@ -34,7 +34,7 @@ export default function VerifyEmailPage() {
             <div className="bg-primary-600 rounded-lg p-2 shadow-[0_4px_12px_-2px_rgba(37,99,235,.4)]">
               <FlaskConical className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl text-ink-900 tracking-tight">ResearchBridge</span>
+            <span className="font-bold text-xl text-ink-900 tracking-tight">Labyro</span>
           </Link>
         </div>
 
@@ -52,7 +52,7 @@ export default function VerifyEmailPage() {
                 <CheckCircle className="h-6 w-6 text-emerald-600" />
               </div>
               <h1 className="font-semibold text-ink-900 mb-2">Email verified</h1>
-              <p className="text-sm text-gray-600 mb-6">Your account is all set. Welcome to ResearchBridge.</p>
+              <p className="text-sm text-gray-600 mb-6">Your account is all set. Welcome to Labyro.</p>
               <Link to="/login" className="btn-primary">Sign in</Link>
             </div>
           )}

@@ -20,6 +20,8 @@ const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 const allowedOrigins = [
   env.frontendUrl,
+  'https://labyro.com',
+  'https://www.labyro.com',
   'https://research-platform-lake.vercel.app',
   'http://localhost:5173',
 ];

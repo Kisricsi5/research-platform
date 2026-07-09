@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'ResearchBridge — Find Your Research Opportunity',
-        short_name: 'ResearchBridge',
+        name: 'Labyro — Find Your Research Opportunity',
+        short_name: 'Labyro',
         description: 'Connect university students with professors for research opportunities',
         theme_color: '#2563eb',
         background_color: '#f8fafc',
