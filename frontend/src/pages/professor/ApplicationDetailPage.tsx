@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Download, GraduationCap, BookOpen, Sparkles, CheckCircle2, AlertCircle, MessageCircleQuestion } from 'lucide-react';
@@ -61,10 +61,12 @@ export default function ApplicationDetailPage() {
   });
 
   // Initialise once data loads
-  if (app && notes === '' && selectedStatus === 'PENDING') {
-    setNotes(app.professorNotes ?? '');
-    setSelectedStatus(app.status as ApplicationStatus);
-  }
+  useEffect(() => {
+    if (app) {
+      setNotes(app.professorNotes ?? '');
+      setSelectedStatus(app.status as ApplicationStatus);
+    }
+  }, [app]);
 
   if (isLoading) return <DashboardLayout><PageSpinner /></DashboardLayout>;
   if (!app) return <DashboardLayout><div className="p-8 text-center text-gray-500">Application not found</div></DashboardLayout>;
