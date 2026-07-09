@@ -83,18 +83,6 @@ app.get('/api/config', (_req, res) => {
   res.json({ aiFitAnalysis: typeof process.env.ANTHROPIC_API_KEY === 'string' && process.env.ANTHROPIC_API_KEY.length > 0 });
 });
 
-// Debug: what does the process actually see for DATABASE_URL? (safe - no password)
-app.get('/health/env', (_req, res) => {
-  const raw = process.env.DATABASE_URL;
-  res.json({
-    DATABASE_URL_defined: typeof raw === 'string',
-    DATABASE_URL_length: raw ? raw.length : 0,
-    DATABASE_URL_first15: raw ? JSON.stringify(raw.slice(0, 15)) : null,
-    DIRECT_URL_defined: typeof process.env.DIRECT_URL === 'string',
-    DIRECT_URL_first15: process.env.DIRECT_URL ? JSON.stringify(process.env.DIRECT_URL.slice(0, 15)) : null,
-  });
-});
-
 // Database connectivity check
 app.get('/health/db', async (_req, res) => {
   try {

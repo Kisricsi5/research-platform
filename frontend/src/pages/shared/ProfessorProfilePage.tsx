@@ -10,6 +10,8 @@ import { PageSpinner } from '../../components/ui/Spinner';
 import Avatar from '../../components/ui/Avatar';
 import { useAuth } from '../../context/AuthContext';
 import { compensationLabels } from '../../utils';
+import VerifiedBadge from '../../components/shared/VerifiedBadge';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function ProfessorProfilePage() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +24,8 @@ export default function ProfessorProfilePage() {
     queryFn: () => professorsApi.getById(id!),
     enabled: !!id,
   });
+
+  usePageTitle(professor ? `${professor.firstName} ${professor.lastName}` : undefined);
 
   const saveMutation = useMutation({
     mutationFn: () => studentsApi.saveProfessor(id!),
@@ -101,7 +105,8 @@ export default function ProfessorProfilePage() {
                 <p className="text-sm text-gray-500 mt-1">🔬 {professor.labName}</p>
               )}
 
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                {professor.user?.emailVerified && <VerifiedBadge />}
                 {professor.acceptingStudents ? (
                   <span className="flex items-center gap-1 badge-green">
                     <CheckCircle className="h-3.5 w-3.5" />

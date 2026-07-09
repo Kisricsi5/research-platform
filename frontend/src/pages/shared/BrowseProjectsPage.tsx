@@ -8,6 +8,7 @@ import EmptyState from '../../components/ui/EmptyState';
 import { SkeletonGrid } from '../../components/ui/Skeleton';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const COMPENSATION_FILTERS = [
   { value: '', label: 'All' },
@@ -18,6 +19,7 @@ const COMPENSATION_FILTERS = [
 ];
 
 export default function BrowseProjectsPage() {
+  usePageTitle('Research Opportunities');
   const { user } = useAuth();
   const [q, setQ] = useState('');
   const [compensationType, setCompensationType] = useState('');

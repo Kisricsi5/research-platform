@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Building2, BookOpen, CheckCircle } from 'lucide-react';
 import { ProfessorProfile } from '../../types';
 import Avatar from '../ui/Avatar';
+import VerifiedBadge from './VerifiedBadge';
 
 interface ProfessorCardProps {
   professor: ProfessorProfile;
@@ -18,8 +19,9 @@ export default function ProfessorCard({ professor }: ProfessorCardProps) {
           size="lg"
         />
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 truncate">
+          <h3 className="font-semibold text-gray-900 truncate flex items-center gap-1.5">
             {professor.firstName} {professor.lastName}
+            {professor.user?.emailVerified && <VerifiedBadge compact />}
           </h3>
           <p className="text-sm text-gray-500">{professor.title}</p>
           <div className="flex items-center gap-1 mt-1">

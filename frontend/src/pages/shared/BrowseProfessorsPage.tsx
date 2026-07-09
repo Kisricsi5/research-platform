@@ -7,11 +7,13 @@ import ProfessorCard from '../../components/shared/ProfessorCard';
 import EmptyState from '../../components/ui/EmptyState';
 import { SkeletonGrid } from '../../components/ui/Skeleton';
 import { Users } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const DEPARTMENTS = ['Computer Science', 'Biology', 'Chemistry', 'Physics', 'Psychology', 'Mathematics', 'Engineering', 'Medicine', 'Economics', 'Sociology'];
 const RESEARCH_AREAS = ['Machine Learning', 'Cell Biology', 'Neuroscience', 'Quantum Computing', 'Climate Science', 'CRISPR', 'NLP', 'Robotics', 'Public Health', 'Data Science'];
 
 export default function BrowseProfessorsPage() {
+  usePageTitle('Researchers & Labs');
   const [q, setQ] = useState('');
   const [department, setDepartment] = useState('');
   const [researchArea, setResearchArea] = useState('');

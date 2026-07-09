@@ -8,6 +8,7 @@ import { FlaskConical, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Spinner from '../../components/ui/Spinner';
 import { sleep } from '../../utils';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -18,6 +19,7 @@ type FormData = z.infer<typeof schema>;
 const MAX_ATTEMPTS = 3;
 
 export default function LoginPage() {
+  usePageTitle('Sign in');
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);

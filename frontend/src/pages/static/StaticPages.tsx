@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { SUPPORT_EMAIL } from '../../config';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import Layout from '../../components/layout/Layout';
 
 function StaticShell({ title, updated, children }: { title: string; updated?: string; children: React.ReactNode }) {
+  usePageTitle(title);
   return (
     <Layout>
       <div className="bg-white border-b border-gray-100">
@@ -49,7 +52,7 @@ export function AboutPage() {
           Labyro is young and growing lab by lab. If you're a professor or lab
           coordinator interested in being one of our founding labs — or a student with
           feedback — we'd genuinely love to hear from you at{' '}
-          <a href="mailto:peocz55@gmail.com" className="text-primary-600 font-medium hover:underline">peocz55@gmail.com</a>.
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary-600 font-medium hover:underline">{SUPPORT_EMAIL}</a>.
         </p>
       </section>
       <div className="pt-4">
@@ -94,7 +97,7 @@ export function PrivacyPage() {
         <p>
           You can edit your profile at any time. To delete your account and its data,
           email us at{' '}
-          <a href="mailto:peocz55@gmail.com" className="text-primary-600 font-medium hover:underline">peocz55@gmail.com</a>{' '}
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary-600 font-medium hover:underline">{SUPPORT_EMAIL}</a>{' '}
           and we'll remove it.
         </p>
       </section>
@@ -102,7 +105,7 @@ export function PrivacyPage() {
         <h2>Questions</h2>
         <p>
           This policy will evolve as the platform grows. Questions or concerns:{' '}
-          <a href="mailto:peocz55@gmail.com" className="text-primary-600 font-medium hover:underline">peocz55@gmail.com</a>.
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary-600 font-medium hover:underline">{SUPPORT_EMAIL}</a>.
         </p>
       </section>
     </StaticShell>
@@ -156,7 +159,7 @@ export function TermsPage() {
         <h2>Contact</h2>
         <p>
           Questions about these terms:{' '}
-          <a href="mailto:peocz55@gmail.com" className="text-primary-600 font-medium hover:underline">peocz55@gmail.com</a>.
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary-600 font-medium hover:underline">{SUPPORT_EMAIL}</a>.
         </p>
       </section>
     </StaticShell>

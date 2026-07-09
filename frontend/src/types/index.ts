@@ -52,6 +52,8 @@ export interface ProfessorProfile {
   bio?: string | null;
   profilePicture?: string | null;
   acceptingStudents: boolean;
+  /** Present on public professor/project payloads; true once the university email is confirmed. */
+  user?: { emailVerified: boolean };
   projects?: ResearchProject[];
   _count?: { projects?: number; applications?: number };
   isSaved?: boolean;
@@ -62,7 +64,7 @@ export interface ProfessorProfile {
 export interface ResearchProject {
   id: string;
   professorId: string;
-  professor?: Pick<ProfessorProfile, 'id' | 'firstName' | 'lastName' | 'title' | 'department' | 'university' | 'profilePicture'>;
+  professor?: Pick<ProfessorProfile, 'id' | 'firstName' | 'lastName' | 'title' | 'department' | 'university' | 'profilePicture' | 'user'>;
   title: string;
   description: string;
   requiredSkills: string[];
@@ -90,7 +92,7 @@ export interface Application {
   status: ApplicationStatus;
   professorNotes?: string | null;
   student?: StudentProfile;
-  professor?: Pick<ProfessorProfile, 'id' | 'firstName' | 'lastName' | 'title' | 'department' | 'university' | 'profilePicture'>;
+  professor?: Pick<ProfessorProfile, 'id' | 'firstName' | 'lastName' | 'title' | 'department' | 'university' | 'profilePicture' | 'user'>;
   project?: Pick<ResearchProject, 'id' | 'title' | 'compensationType' | 'hoursPerWeek'>;
   createdAt: string;
   updatedAt: string;

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FlaskConical, GraduationCap, BookOpen, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { cn, sleep } from '../../utils';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import Spinner from '../../components/ui/Spinner';
 
 const schema = z.object({
@@ -23,6 +24,7 @@ type FormData = z.infer<typeof schema>;
 const MAX_ATTEMPTS = 3;
 
 export default function SignupPage() {
+  usePageTitle('Create your account');
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);

@@ -3,6 +3,7 @@ import { Clock, Calendar, DollarSign, Building2 } from 'lucide-react';
 import { ResearchProject } from '../../types';
 import { compensationLabels, compensationColors, formatDate } from '../../utils';
 import Avatar from '../ui/Avatar';
+import VerifiedBadge from './VerifiedBadge';
 
 interface ProjectCardProps {
   project: ResearchProject;
@@ -24,9 +25,10 @@ export default function ProjectCard({ project, showApply = true }: ProjectCardPr
           <div>
             <Link
               to={`/professors/${project.professor.id}`}
-              className="text-sm font-medium text-gray-900 hover:text-primary-600"
+              className="text-sm font-medium text-gray-900 hover:text-primary-600 inline-flex items-center gap-1"
             >
               {project.professor.firstName} {project.professor.lastName}
+              {project.professor.user?.emailVerified && <VerifiedBadge compact className="h-3.5 w-3.5" />}
             </Link>
             <p className="text-xs text-gray-500">{project.professor.department}</p>
           </div>

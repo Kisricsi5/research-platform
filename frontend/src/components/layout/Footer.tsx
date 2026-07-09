@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FlaskConical, Mail } from 'lucide-react';
+import { SUPPORT_EMAIL } from '../../config';
 
 const columns = [
   {
@@ -47,7 +48,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3 mt-6">
               <a
-                href="mailto:peocz55@gmail.com"
+                href={`mailto:${SUPPORT_EMAIL}`}
                 aria-label="Email us"
                 className="inline-flex items-center gap-2 p-2 pr-3 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors text-sm"
               >

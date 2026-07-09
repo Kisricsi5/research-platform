@@ -152,6 +152,7 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
           select: {
             id: true, firstName: true, lastName: true, title: true,
             department: true, university: true, profilePicture: true,
+            user: { select: { emailVerified: true } },
           },
         },
         _count: { select: { applications: true } },
@@ -173,6 +174,7 @@ export async function getProjectById(req: AuthRequest, res: Response): Promise<v
           id: true, firstName: true, lastName: true, title: true,
           department: true, university: true, profilePicture: true,
           bio: true, researchAreas: true, labName: true, acceptingStudents: true,
+          user: { select: { emailVerified: true } },
         },
       },
     },
