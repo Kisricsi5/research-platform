@@ -16,6 +16,10 @@ import publicRoutes from './routes/public.routes';
 
 const app = express();
 
+// Render terminates TLS at its proxy; trust it so client IPs (and the
+// rate limiter) see the real address instead of the proxy's.
+app.set('trust proxy', 1);
+
 // Security
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 const allowedOrigins = [
