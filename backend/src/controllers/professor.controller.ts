@@ -243,7 +243,7 @@ export async function analyzeApplicationFit(req: AuthRequest, res: Response): Pr
         description: app.project.description,
         requiredSkills: app.project.requiredSkills,
         preferredMajors: app.project.preferredMajors,
-        preferredYear: app.project.preferredYear,
+        preferredYears: app.project.preferredYears,
       },
       student: {
         major: app.student.major,
