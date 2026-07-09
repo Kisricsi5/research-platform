@@ -5,16 +5,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, X, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { projectsApi } from '../../api/projects';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Spinner from '../../components/ui/Spinner';
+import TagPicker from '../../components/ui/TagPicker';
+import { COMMON_SKILLS, COMMON_MAJORS, YEAR_OPTIONS } from '../../data/suggestions';
+import { cn } from '../../utils';
 
 const schema = z.object({
   title: z.string().min(1, 'Required').max(300),
   description: z.string().min(10, 'At least 10 characters').max(5000),
-  preferredYear: z.enum(['freshman', 'sophomore', 'junior', 'senior', 'graduate', 'any']).optional(),
   hoursPerWeek: z.coerce.number().int().min(1).max(60).optional().nullable(),
   duration: z.string().max(100).optional(),
   compensationType: z.enum(['UNPAID', 'PAID', 'CREDIT', 'STIPEND']),
@@ -31,8 +33,10 @@ export default function ProjectFormPage() {
   const queryClient = useQueryClient();
   const [skills, setSkills] = useState<string[]>([]);
   const [majors, setMajors] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState('');
-  const [majorInput, setMajorInput] = useState('');
+  const [years, setYears] = useState<string[]>([]);
+
+  const toggleYear = (value: string) =>
+    setYears((prev) => (prev.includes(value) ? prev.filter((y) => y !== value) : [...prev, value]));
 
   const { data: projects } = useQuery({
     queryKey: ['my-projects'],
@@ -51,7 +55,6 @@ export default function ProjectFormPage() {
       reset({
         title: existing.title,
         description: existing.description,
-        preferredYear: existing.preferredYear as any,
         hoursPerWeek: existing.hoursPerWeek,
         duration: existing.duration ?? '',
         compensationType: existing.compensationType,
@@ -61,6 +64,7 @@ export default function ProjectFormPage() {
       });
       setSkills(existing.requiredSkills);
       setMajors(existing.preferredMajors);
+      setYears(existing.preferredYears ?? []);
     }
   }, [existing, reset]);
 
@@ -70,6 +74,7 @@ export default function ProjectFormPage() {
         ...data,
         requiredSkills: skills,
         preferredMajors: majors,
+        preferredYears: years,
         applicationDeadline: data.applicationDeadline ? new Date(data.applicationDeadline).toISOString() : null,
       }),
     onSuccess: () => {
@@ -86,6 +91,7 @@ export default function ProjectFormPage() {
         ...data,
         requiredSkills: skills,
         preferredMajors: majors,
+        preferredYears: years,
         applicationDeadline: data.applicationDeadline ? new Date(data.applicationDeadline).toISOString() : null,
       }),
     onSuccess: () => {
@@ -95,12 +101,6 @@ export default function ProjectFormPage() {
     },
     onError: () => toast.error('Failed to update project'),
   });
-
-  const addTag = (value: string, list: string[], setter: (v: string[]) => void, inputSetter: (v: string) => void) => {
-    const trimmed = value.trim();
-    if (trimmed && !list.includes(trimmed)) setter([...list, trimmed]);
-    inputSetter('');
-  };
 
   if (isEdit && !projects) return <DashboardLayout><PageSpinner /></DashboardLayout>;
 
@@ -155,49 +155,52 @@ export default function ProjectFormPage() {
               </div>
             </div>
             <div>
-              <label className="label">Preferred Year</label>
-              <select {...register('preferredYear')} className="input">
-                <option value="">Any year</option>
-                <option value="freshman">Freshman</option>
-                <option value="sophomore">Sophomore</option>
-                <option value="junior">Junior</option>
-                <option value="senior">Senior</option>
-                <option value="graduate">Graduate</option>
-                <option value="any">Any</option>
-              </select>
+              <label className="label">Preferred Years <span className="text-gray-400 font-normal">(select all that apply — none selected means any year)</span></label>
+              <div className="flex flex-wrap gap-2">
+                {YEAR_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => toggleYear(value)}
+                    aria-pressed={years.includes(value)}
+                    className={cn(
+                      'rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150 ring-1 ring-inset',
+                      years.includes(value)
+                        ? 'bg-primary-600 text-white ring-primary-600 shadow-sm'
+                        : 'bg-white text-gray-600 ring-gray-300 hover:ring-gray-400 hover:text-gray-900',
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Required Skills */}
           <div className="card p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Required Skills</h2>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {skills.map((s) => (
-                <span key={s} className="badge-blue flex items-center gap-1">
-                  {s}<button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))}><X className="h-3 w-3" /></button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(skillInput, skills, setSkills, setSkillInput); } }} className="input flex-1" placeholder="Add skill..." />
-              <button type="button" onClick={() => addTag(skillInput, skills, setSkills, setSkillInput)} className="btn-secondary gap-1"><Plus className="h-4 w-4" />Add</button>
-            </div>
+            <h2 className="font-semibold text-gray-900 mb-1">Required Skills</h2>
+            <p className="helper mb-4">Start typing to pick from common research skills, or add your own.</p>
+            <TagPicker
+              selected={skills}
+              onChange={setSkills}
+              suggestions={COMMON_SKILLS}
+              placeholder="e.g. Python, PCR, Literature Review…"
+              badgeClass="badge-blue"
+            />
           </div>
 
           {/* Preferred Majors */}
           <div className="card p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Preferred Majors <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {majors.map((m) => (
-                <span key={m} className="badge-gray flex items-center gap-1">
-                  {m}<button type="button" onClick={() => setMajors(majors.filter((x) => x !== m))}><X className="h-3 w-3" /></button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input value={majorInput} onChange={(e) => setMajorInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(majorInput, majors, setMajors, setMajorInput); } }} className="input flex-1" placeholder="Add major..." />
-              <button type="button" onClick={() => addTag(majorInput, majors, setMajors, setMajorInput)} className="btn-secondary gap-1"><Plus className="h-4 w-4" />Add</button>
-            </div>
+            <h2 className="font-semibold text-gray-900 mb-1">Preferred Majors <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
+            <p className="helper mb-4">Start typing to pick from common majors, or add your own.</p>
+            <TagPicker
+              selected={majors}
+              onChange={setMajors}
+              suggestions={COMMON_MAJORS}
+              placeholder="e.g. Biology, Computer Science…"
+              badgeClass="badge-gray"
+            />
           </div>
 
           <div className="card p-4 space-y-4">

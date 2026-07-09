@@ -67,7 +67,7 @@ export interface ResearchProject {
   description: string;
   requiredSkills: string[];
   preferredMajors: string[];
-  preferredYear?: string | null;
+  preferredYears?: string[];
   hoursPerWeek?: number | null;
   duration?: string | null;
   compensationType: CompensationType;

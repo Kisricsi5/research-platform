@@ -114,7 +114,7 @@ model ResearchProject {
   description         String
   requiredSkills      String[]
   preferredMajors     String[]
-  preferredYear       String?
+  preferredYears      String[]         @default([])
   hoursPerWeek        Int?
   duration            String?
   compensationType    CompensationType @default(UNPAID)

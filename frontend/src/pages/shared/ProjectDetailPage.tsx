@@ -133,7 +133,7 @@ export default function ProjectDetailPage() {
               <p className="text-gray-600 whitespace-pre-line leading-relaxed">{project.description}</p>
             </section>
 
-            {(project.requiredSkills.length > 0 || project.preferredMajors.length > 0 || project.preferredYear) && (
+            {(project.requiredSkills.length > 0 || project.preferredMajors.length > 0 || (project.preferredYears?.length ?? 0) > 0) && (
               <section className="card p-6">
                 <h2 className="text-lg font-semibold text-ink-900 mb-5">What we're looking for</h2>
                 <div className="space-y-5">
@@ -155,11 +155,12 @@ export default function ProjectDetailPage() {
                       </div>
                     </div>
                   )}
-                  {project.preferredYear && (
+                  {(project.preferredYears?.length ?? 0) > 0 && (
                     <div className="flex items-center gap-2">
                       <Users className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">
-                        Preferred year: <strong className="capitalize text-ink-900">{project.preferredYear}</strong>
+                        Preferred year{project.preferredYears!.length > 1 ? 's' : ''}:{' '}
+                        <strong className="capitalize text-ink-900">{project.preferredYears!.join(', ')}</strong>
                       </span>
                     </div>
                   )}
