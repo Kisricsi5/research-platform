@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { authenticate } from '../middleware/auth';
+import { asyncHandler } from '../utils/asyncHandler';
 import * as professor from '../controllers/professor.controller';
 import * as project from '../controllers/project.controller';
 import * as application from '../controllers/application.controller';
@@ -16,14 +17,14 @@ function optionalAuth(req: Request, res: Response, next: NextFunction): void {
   }
 }
 
-router.get('/professors', optionalAuth, professor.listProfessors);
-router.get('/professors/:id', optionalAuth, professor.getProfessorById);
-router.get('/projects', project.listProjects);
-router.get('/projects/:id', project.getProjectById);
+router.get('/professors', optionalAuth, asyncHandler(professor.listProfessors));
+router.get('/professors/:id', optionalAuth, asyncHandler(professor.getProfessorById));
+router.get('/projects', asyncHandler(project.listProjects));
+router.get('/projects/:id', asyncHandler(project.getProjectById));
 
 // Notifications (any authenticated user)
-router.get('/notifications', authenticate, application.getNotifications);
-router.patch('/notifications/:id/read', authenticate, application.markNotificationRead);
-router.patch('/notifications/read-all', authenticate, application.markAllNotificationsRead);
+router.get('/notifications', authenticate, asyncHandler(application.getNotifications));
+router.patch('/notifications/:id/read', authenticate, asyncHandler(application.markNotificationRead));
+router.patch('/notifications/read-all', authenticate, asyncHandler(application.markAllNotificationsRead));
 
 export default router;

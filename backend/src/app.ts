@@ -16,6 +16,14 @@ import publicRoutes from './routes/public.routes';
 
 const app = express();
 
+// Node exits on unhandled rejections by default, which turns a single failed
+// query into a full restart that drops every in-flight request. Route handlers
+// forward errors via asyncHandler; this catches anything that slips past
+// (e.g. fire-and-forget email sends) and keeps the server up.
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+});
+
 // Render terminates TLS at its proxy; trust it so client IPs (and the
 // rate limiter) see the real address instead of the proxy's.
 app.set('trust proxy', 1);
