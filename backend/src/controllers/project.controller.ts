@@ -20,9 +20,20 @@ const projectSchema = z.object({
 });
 
 export async function createProject(req: AuthRequest, res: Response): Promise<void> {
-  const profile = await prisma.professorProfile.findUnique({ where: { userId: req.user!.userId } });
+  const profile = await prisma.professorProfile.findUnique({
+    where: { userId: req.user!.userId },
+    include: { user: { select: { emailVerified: true } } },
+  });
   if (!profile) {
     res.status(400).json({ error: 'Please complete your profile first' });
+    return;
+  }
+
+  if (!profile.user.emailVerified) {
+    res.status(403).json({
+      error: 'Please verify your university email before posting an opportunity. Check your inbox for the verification link.',
+      code: 'EMAIL_NOT_VERIFIED',
+    });
     return;
   }
 

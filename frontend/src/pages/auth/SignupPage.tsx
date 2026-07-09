@@ -145,6 +145,11 @@ export default function SignupPage() {
             <div>
               <label className="label">Email</label>
               <input {...register('email')} type="email" className="input" placeholder="you@university.edu" />
+              {role === 'PROFESSOR' && (
+                <p className="helper">
+                  Professor accounts require a university email address (e.g. name@university.edu).
+                </p>
+              )}
               {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
             </div>
 
