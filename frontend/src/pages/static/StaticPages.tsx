@@ -22,11 +22,11 @@ function StaticShell({ title, updated, children }: { title: string; updated?: st
 
 export function AboutPage() {
   return (
-    <StaticShell title="About ResearchBridge">
+    <StaticShell title="About Labyro">
       <section>
         <h2>What we're building</h2>
         <p>
-          ResearchBridge is a platform that connects university students with research
+          Labyro is a platform that connects university students with research
           opportunities posted by professors, labs, and academic organizations. Students
           discover openings that match their field, skills, and availability — and apply
           with a structured profile instead of a cold email. Labs receive applications
@@ -46,7 +46,7 @@ export function AboutPage() {
       <section>
         <h2>Where we are</h2>
         <p>
-          ResearchBridge is young and growing lab by lab. If you're a professor or lab
+          Labyro is young and growing lab by lab. If you're a professor or lab
           coordinator interested in being one of our founding labs — or a student with
           feedback — we'd genuinely love to hear from you at{' '}
           <a href="mailto:peocz55@gmail.com" className="text-primary-600 font-medium hover:underline">peocz55@gmail.com</a>.
@@ -54,7 +54,7 @@ export function AboutPage() {
       </section>
       <div className="pt-4">
         <Link to="/signup" className="btn-primary">
-          Join ResearchBridge <ArrowRight className="h-4 w-4" />
+          Join Labyro <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </StaticShell>
@@ -115,7 +115,7 @@ export function TermsPage() {
       <section>
         <h2>The service</h2>
         <p>
-          ResearchBridge connects students with research opportunities posted by professors,
+          Labyro connects students with research opportunities posted by professors,
           labs, and academic organizations. Accounts are free. By using the platform you
           agree to these terms.
         </p>
@@ -146,7 +146,7 @@ export function TermsPage() {
       <section>
         <h2>Disclaimer</h2>
         <p>
-          ResearchBridge facilitates introductions between students and labs; the research
+          Labyro facilitates introductions between students and labs; the research
           relationships themselves — including any compensation, credit, or supervision —
           are between you and the other party. The service is provided "as is" while we
           grow and improve it.

@@ -88,7 +88,7 @@ export default function LoginPage() {
             <div className="bg-primary-600 rounded-lg p-2 shadow-[0_4px_12px_-2px_rgba(37,99,235,.4)]">
               <FlaskConical className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl text-ink-900 tracking-tight">ResearchBridge</span>
+            <span className="font-bold text-xl text-ink-900 tracking-tight">Labyro</span>
           </Link>
           <h1 className="display text-3xl">Welcome back</h1>
           <p className="text-gray-500 mt-2">Sign in to your account</p>

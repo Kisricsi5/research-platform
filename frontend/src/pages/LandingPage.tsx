@@ -106,7 +106,7 @@ export default function LandingPage() {
                 <span className="text-primary-600">ambition.</span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-xl mb-10">
-                ResearchBridge connects students, researchers, and labs through verified
+                Labyro connects students, researchers, and labs through verified
                 academic opportunities, structured applications, and smarter discovery.
               </p>
 
@@ -365,7 +365,7 @@ export default function LandingPage() {
             ))}
           </div>
           <p className="text-xs text-gray-400 text-center mt-8">
-            Illustrative quotes reflecting the problems ResearchBridge is built to solve.
+            Illustrative quotes reflecting the problems Labyro is built to solve.
           </p>
         </div>
       </section>

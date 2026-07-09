@@ -39,7 +39,7 @@ export default function Footer() {
               <div className="bg-primary-600 rounded-lg p-1.5">
                 <FlaskConical className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold text-white text-lg tracking-tight">ResearchBridge</span>
+              <span className="font-bold text-white text-lg tracking-tight">Labyro</span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
               The marketplace where university students find research positions — and labs
@@ -74,7 +74,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} ResearchBridge. All rights reserved.
+            © {new Date().getFullYear()} Labyro. All rights reserved.
           </p>
           <p className="text-xs text-gray-500">Built for the research community.</p>
         </div>

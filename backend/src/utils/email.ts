@@ -15,9 +15,9 @@ export async function sendVerificationEmail(to: string, token: string): Promise<
   await transporter.sendMail({
     from: env.email.from,
     to,
-    subject: 'Verify your Research Platform email',
+    subject: 'Verify your Labyro email',
     html: `
-      <h2>Welcome to Research Platform!</h2>
+      <h2>Welcome to Labyro!</h2>
       <p>Please verify your email address by clicking the link below:</p>
       <a href="${url}" style="background:#2563EB;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">
         Verify Email
@@ -33,7 +33,7 @@ export async function sendPasswordResetEmail(to: string, token: string): Promise
   await transporter.sendMail({
     from: env.email.from,
     to,
-    subject: 'Reset your Research Platform password',
+    subject: 'Reset your Labyro password',
     html: `
       <h2>Password Reset Request</h2>
       <p>Click the link below to reset your password:</p>
