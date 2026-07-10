@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FileText, BookOpen, Clock, Plus, Users, TrendingUp, MailWarning } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { authApi } from '../../api/auth';
+import { FileText, BookOpen, Clock, Plus, Users, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { professorsApi } from '../../api/professors';
@@ -15,21 +12,6 @@ import Avatar from '../../components/ui/Avatar';
 
 export default function ProfessorDashboard() {
   const { user } = useAuth();
-  const [resending, setResending] = useState(false);
-  const [resent, setResent] = useState(false);
-
-  const resendVerification = async () => {
-    setResending(true);
-    try {
-      await authApi.resendVerification();
-      setResent(true);
-      toast.success('Verification email sent — check your inbox.');
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Could not send the email. Try again shortly.');
-    } finally {
-      setResending(false);
-    }
-  };
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['professor-dashboard'],
@@ -64,27 +46,6 @@ export default function ProfessorDashboard() {
         <div className="card p-4 bg-amber-50 border-amber-200 mb-6 flex items-center justify-between gap-4">
           <p className="text-sm font-medium text-amber-900">Complete your professor profile to start receiving applications</p>
           <Link to="/professor/profile" className="btn-primary flex-shrink-0">Complete Profile</Link>
-        </div>
-      )}
-
-      {user && !user.emailVerified && (
-        <div className="card p-4 bg-amber-50 border-amber-200 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <MailWarning className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-amber-900">Verify your university email to post opportunities</p>
-              <p className="text-xs text-amber-700 mt-0.5">
-                We sent a verification link to {user.email}. Posting is enabled once it's confirmed.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={resendVerification}
-            disabled={resending || resent}
-            className="btn-secondary flex-shrink-0"
-          >
-            {resent ? 'Email sent ✓' : resending ? 'Sending…' : 'Resend email'}
-          </button>
         </div>
       )}
 

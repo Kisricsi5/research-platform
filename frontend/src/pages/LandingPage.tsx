@@ -51,7 +51,7 @@ const trustSignals = [
 
 const features = [
   { icon: Sparkles, title: 'Smart matching', desc: 'Opportunities surfaced by field, skills, and interests — not keyword luck.' },
-  { icon: ShieldCheck, title: 'Verified listings', desc: 'Researchers confirm a university email before posting — look for the verified badge on every listing.' },
+  { icon: ShieldCheck, title: 'Verified researchers', desc: 'Researchers can confirm their university email — look for the verified badge on listings and profiles.' },
   { icon: UserRound, title: 'Academic profiles', desc: 'One research profile — CV, GPA, skills — reused across every application.' },
   { icon: FolderKanban, title: 'Application tracking', desc: 'Every application and its status, in one dashboard.' },
   { icon: BookmarkPlus, title: 'Saved opportunities', desc: 'Bookmark labs and projects to revisit when you’re ready.' },
