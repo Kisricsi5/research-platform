@@ -1,5 +1,5 @@
 import api from './client';
-import { Application, PaginatedResponse } from '../types';
+import { Application, ApplicationMessage, PaginatedResponse } from '../types';
 
 export interface FitAnalysis {
   fitLevel: 'Strong' | 'Moderate' | 'Limited';
@@ -32,6 +32,14 @@ export const applicationsApi = {
 
   analyzeFit: (id: string) =>
     api.post<FitAnalysis>(`/professor/applications/${id}/analyze`).then((r) => r.data),
+};
+
+export const messagesApi = {
+  list: (applicationId: string) =>
+    api.get<ApplicationMessage[]>(`/applications/${applicationId}/messages`).then((r) => r.data),
+
+  send: (applicationId: string, body: string) =>
+    api.post<ApplicationMessage>(`/applications/${applicationId}/messages`, { body }).then((r) => r.data),
 };
 
 export const configApi = {

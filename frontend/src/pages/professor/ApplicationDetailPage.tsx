@@ -5,6 +5,7 @@ import { ArrowLeft, Download, GraduationCap, BookOpen, Sparkles, CheckCircle2, A
 import toast from 'react-hot-toast';
 import { applicationsApi, configApi, FitAnalysis } from '../../api/applications';
 import { DashboardLayout } from '../../components/layout/Layout';
+import MessageThread from '../../components/shared/MessageThread';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Spinner from '../../components/ui/Spinner';
 import Avatar from '../../components/ui/Avatar';
@@ -130,6 +131,9 @@ export default function ApplicationDetailPage() {
               </div>
             </div>
           )}
+
+          {/* Private messages with the applicant */}
+          <MessageThread applicationId={app.id} otherName={`${student.firstName} ${student.lastName}`} />
         </div>
 
         {/* Application content */}

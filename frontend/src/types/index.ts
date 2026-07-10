@@ -98,6 +98,14 @@ export interface Application {
   updatedAt: string;
 }
 
+export interface ApplicationMessage {
+  id: string;
+  applicationId: string;
+  senderId: string;
+  body: string;
+  createdAt: string;
+}
+
 export interface Notification {
   id: string;
   userId: string;
