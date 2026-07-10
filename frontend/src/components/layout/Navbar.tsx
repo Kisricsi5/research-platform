@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, Menu, X, FlaskConical, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/client';
 import { Notification } from '../../types';
 import Avatar from '../ui/Avatar';
@@ -10,6 +10,7 @@ import Avatar from '../ui/Avatar';
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -48,6 +49,25 @@ export default function Navbar() {
   });
 
   const unread = notifications.filter((n) => !n.isRead).length;
+
+  // Where a notification should take the user, by role and payload
+  const notificationTarget = (n: Notification): string => {
+    const applicationId = n.metadata?.applicationId;
+    if (user?.role === 'PROFESSOR') {
+      return applicationId ? `/professor/applications/${applicationId}` : '/professor/applications';
+    }
+    return applicationId ? `/student/applications/${applicationId}` : '/student/applications';
+  };
+
+  const openNotification = (n: Notification) => {
+    setNotifOpen(false);
+    if (!n.isRead) {
+      api.patch(`/notifications/${n.id}/read`)
+        .then(() => queryClient.invalidateQueries({ queryKey: ['notifications'] }))
+        .catch(() => {});
+    }
+    navigate(notificationTarget(n));
+  };
 
   const handleLogout = () => {
     logout();
@@ -109,7 +129,9 @@ export default function Navbar() {
                         {unread > 0 && (
                           <button
                             onClick={() => {
-                              api.patch('/notifications/read-all');
+                              api.patch('/notifications/read-all')
+                                .then(() => queryClient.invalidateQueries({ queryKey: ['notifications'] }))
+                                .catch(() => {});
                               setNotifOpen(false);
                             }}
                             className="text-xs text-primary-600 hover:underline"
@@ -123,13 +145,14 @@ export default function Navbar() {
                           <p className="text-sm text-gray-500 text-center py-6">No notifications</p>
                         ) : (
                           notifications.slice(0, 10).map((n) => (
-                            <div
+                            <button
                               key={n.id}
-                              className={`px-4 py-3 ${!n.isRead ? 'bg-primary-50' : ''}`}
+                              onClick={() => openNotification(n)}
+                              className={`block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${!n.isRead ? 'bg-primary-50 hover:bg-primary-100/60' : ''}`}
                             >
                               <p className="text-sm font-medium text-gray-900">{n.title}</p>
                               <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
-                            </div>
+                            </button>
                           ))
                         )}
                       </div>
