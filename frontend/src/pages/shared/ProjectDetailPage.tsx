@@ -8,6 +8,8 @@ import { projectsApi } from '../../api/projects';
 import Layout from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Avatar from '../../components/ui/Avatar';
+import VerifiedBadge from '../../components/shared/VerifiedBadge';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { compensationLabels, formatDate } from '../../utils';
 
@@ -28,6 +30,8 @@ export default function ProjectDetailPage() {
     queryFn: () => projectsApi.getById(id!),
     enabled: !!id,
   });
+
+  usePageTitle(project?.title);
 
   if (isLoading) return <Layout><PageSpinner /></Layout>;
   if (!project) {
@@ -96,6 +100,7 @@ export default function ProjectDetailPage() {
             {restricted && project.professor && (
               <span className="badge-ink"><Building2 className="h-3 w-3" />{project.professor.university} students only</span>
             )}
+            {project.professor?.user?.emailVerified && <VerifiedBadge />}
           </div>
 
           <h1 className="display text-3xl sm:text-4xl max-w-3xl mb-4">{project.title}</h1>

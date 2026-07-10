@@ -105,6 +105,7 @@ export async function listProfessors(req: AuthRequest, res: Response): Promise<v
         id: true, firstName: true, lastName: true, title: true,
         department: true, university: true, researchAreas: true,
         labName: true, bio: true, profilePicture: true, acceptingStudents: true,
+        user: { select: { emailVerified: true } },
         _count: { select: { projects: { where: { isActive: true } } } },
       },
       orderBy: { lastName: 'asc' },
@@ -123,6 +124,7 @@ export async function getProfessorById(req: AuthRequest, res: Response): Promise
         where: { isActive: true, isFilled: false },
         orderBy: { createdAt: 'desc' },
       },
+      user: { select: { emailVerified: true } },
       _count: { select: { applications: true } },
     },
   });

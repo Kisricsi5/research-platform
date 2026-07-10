@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import {
   GraduationCap, BookOpen, Search, FileText, Bell, CheckCircle, ArrowRight,
   FlaskConical, ShieldCheck, Globe2, Sparkles, FolderKanban, BookmarkPlus,
-  CalendarClock, UserRound, Clock, MapPin, Quote,
+  CalendarClock, UserRound, Clock, MapPin, MailX, Megaphone, Inbox,
 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
@@ -42,7 +42,7 @@ const sampleOpportunities = [
 ];
 
 const trustSignals = [
-  { icon: ShieldCheck, label: 'Verified academic listings' },
+  { icon: ShieldCheck, label: 'University-email-verified researchers' },
   { icon: GraduationCap, label: 'Built for universities & labs' },
   { icon: Search, label: 'Field-specific discovery' },
   { icon: FileText, label: 'One-click structured applications' },
@@ -51,7 +51,7 @@ const trustSignals = [
 
 const features = [
   { icon: Sparkles, title: 'Smart matching', desc: 'Opportunities surfaced by field, skills, and interests — not keyword luck.' },
-  { icon: ShieldCheck, title: 'Verified listings', desc: 'Every opportunity is posted by a real lab or faculty member.' },
+  { icon: ShieldCheck, title: 'Verified researchers', desc: 'Researchers can confirm their university email — look for the verified badge on listings and profiles.' },
   { icon: UserRound, title: 'Academic profiles', desc: 'One research profile — CV, GPA, skills — reused across every application.' },
   { icon: FolderKanban, title: 'Application tracking', desc: 'Every application and its status, in one dashboard.' },
   { icon: BookmarkPlus, title: 'Saved opportunities', desc: 'Bookmark labs and projects to revisit when you’re ready.' },
@@ -60,21 +60,24 @@ const features = [
   { icon: Bell, title: 'Status notifications', desc: 'Know the moment a lab reviews, shortlists, or responds.' },
 ];
 
-const testimonials = [
+const painPoints = [
   {
-    quote: 'I sent forty cold emails last year and heard back twice. Having real openings in one place, with requirements listed, is exactly what this process needed.',
-    name: 'Maya T.',
-    role: 'Undergraduate researcher, Neuroscience',
+    icon: MailX,
+    problem: 'Cold emails disappear.',
+    reality: 'Students send dozens of messages into faculty inboxes and rarely hear back — often because there was never an opening to begin with.',
+    answer: 'On Labyro, every listing is a real opening with requirements and a deadline. You apply once, in a structured form, and track the response.',
   },
   {
-    quote: 'Applications arrive with a CV, GPA, skills, and availability attached. I can actually compare candidates instead of digging through my inbox.',
-    name: 'Dr. James K.',
-    role: 'Principal Investigator, Chemistry',
+    icon: Megaphone,
+    problem: 'Openings never leave the hallway.',
+    reality: 'Most research positions are filled through word of mouth, department newsletters, and whoever happened to ask at the right time.',
+    answer: 'Posting an opportunity takes minutes and reaches motivated students beyond the usual circle — including those who would never cold-email.',
   },
   {
-    quote: 'We fill positions faster and reach students outside the usual word-of-mouth circle. It puts our smaller lab on equal footing.',
-    name: 'Sofia R.',
-    role: 'Lab coordinator, Environmental Science',
+    icon: Inbox,
+    problem: "An inbox isn't an applicant tracker.",
+    reality: 'Interest arrives as scattered emails with mismatched attachments, so comparing candidates fairly is nearly impossible.',
+    answer: 'Every application arrives in the same structure — CV, skills, availability, cover letter — in one pipeline you can actually review.',
   },
 ];
 
@@ -343,30 +346,29 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ============ TESTIMONIALS ============ */}
+      {/* ============ WHY IT MATTERS ============ */}
       <section className="section bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <p className="section-eyebrow">Why it matters</p>
-            <h2 className="display text-3xl sm:text-4xl">Built around real frustrations.</h2>
+            <h2 className="display text-3xl sm:text-4xl mb-4">The way research recruiting works is broken.</h2>
+            <p className="text-lg text-gray-600">Labyro replaces the cold-email lottery with structure both sides can trust.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <figure key={t.name} className="card p-7 flex flex-col">
-                <Quote className="h-6 w-6 text-primary-200 mb-4" aria-hidden />
-                <blockquote className="text-[15px] text-gray-700 leading-relaxed flex-1">
-                  {t.quote}
-                </blockquote>
-                <figcaption className="mt-6 pt-5 border-t border-gray-100">
-                  <p className="text-sm font-semibold text-ink-900">{t.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{t.role}</p>
-                </figcaption>
-              </figure>
+            {painPoints.map(({ icon: Icon, problem, reality, answer }) => (
+              <div key={problem} className="card p-7 flex flex-col">
+                <div className="h-10 w-10 rounded-xl bg-gray-100 ring-1 ring-gray-900/5 flex items-center justify-center mb-4">
+                  <Icon className="h-5 w-5 text-gray-500" />
+                </div>
+                <h3 className="font-semibold text-ink-900 text-lg mb-2">{problem}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{reality}</p>
+                <div className="mt-5 pt-4 border-t border-gray-100 flex gap-2.5">
+                  <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-gray-700 leading-relaxed">{answer}</p>
+                </div>
+              </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 text-center mt-8">
-            Illustrative quotes reflecting the problems Labyro is built to solve.
-          </p>
         </div>
       </section>
 
