@@ -74,10 +74,10 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             © {new Date().getFullYear()} Labyro. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500">Built for the research community.</p>
+          <p className="text-xs text-gray-400">Built for the research community.</p>
         </div>
       </div>
     </footer>

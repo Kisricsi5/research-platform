@@ -93,7 +93,7 @@ export default function ApplicationsManagementPage() {
                     {app.student?.major} · Class of {app.student?.graduationYear}
                     {app.project && <> · <span className="text-primary-600">{app.project.title}</span></>}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">Applied {formatDate(app.createdAt)}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Applied {formatDate(app.createdAt)}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {app.student?.gpa && <span className="text-xs text-gray-500">GPA {app.student.gpa.toFixed(1)}</span>}

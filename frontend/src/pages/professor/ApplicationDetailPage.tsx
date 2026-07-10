@@ -279,7 +279,7 @@ export default function ApplicationDetailPage() {
             </div>
 
             <div className="mb-4">
-              <label className="label">Private Notes <span className="text-gray-400 font-normal">(only visible to you)</span></label>
+              <label className="label">Private Notes <span className="text-gray-500 font-normal">(only visible to you)</span></label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}

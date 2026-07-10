@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
                 <p className="text-sm text-gray-500">
                   {app.professor?.firstName} {app.professor?.lastName} · {app.professor?.department}
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">Applied {formatDate(app.createdAt)}</p>
+                <p className="text-xs text-gray-500 mt-0.5">Applied {formatDate(app.createdAt)}</p>
               </div>
               <span className={statusColors[app.status]}>{statusLabels[app.status]}</span>
             </Link>

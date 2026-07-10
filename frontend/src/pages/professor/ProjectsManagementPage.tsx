@@ -71,7 +71,11 @@ export default function ProjectsManagementPage() {
                 <Link to={`/professor/projects/${p.id}/edit`} className="btn-secondary btn-sm gap-1">
                   <Edit className="h-3.5 w-3.5" />Edit
                 </Link>
-                <button onClick={() => setDeleteId(p.id)} className="btn-secondary btn-sm gap-1 text-red-600 border-red-200 hover:bg-red-50">
+                <button
+                  onClick={() => setDeleteId(p.id)}
+                  aria-label={`Delete project: ${p.title}`}
+                  className="btn-secondary btn-sm gap-1 text-red-600 border-red-200 hover:bg-red-50"
+                >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
