@@ -19,6 +19,7 @@ import ProjectDetailPage from './pages/shared/ProjectDetailPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentProfilePage from './pages/student/StudentProfilePage';
 import ApplicationsPage from './pages/student/ApplicationsPage';
+import StudentApplicationDetailPage from './pages/student/ApplicationDetailPage';
 import ApplyPage from './pages/student/ApplyPage';
 
 // Professor pages
@@ -79,7 +80,7 @@ function AppRoutes() {
       <Route path="/student/dashboard" element={<ProtectedRoute role="STUDENT"><StudentDashboard /></ProtectedRoute>} />
       <Route path="/student/profile" element={<ProtectedRoute role="STUDENT"><StudentProfilePage /></ProtectedRoute>} />
       <Route path="/student/applications" element={<ProtectedRoute role="STUDENT"><ApplicationsPage /></ProtectedRoute>} />
-      <Route path="/student/applications/:id" element={<ProtectedRoute role="STUDENT"><ApplicationsPage /></ProtectedRoute>} />
+      <Route path="/student/applications/:id" element={<ProtectedRoute role="STUDENT"><StudentApplicationDetailPage /></ProtectedRoute>} />
       <Route path="/student/apply/:projectId" element={<ProtectedRoute role="STUDENT"><ApplyPage /></ProtectedRoute>} />
       <Route path="/student/apply" element={<ProtectedRoute role="STUDENT"><ApplyPage /></ProtectedRoute>} />
 

@@ -47,6 +47,7 @@ model User {
   studentProfile   StudentProfile?
   professorProfile ProfessorProfile?
   notifications    Notification[]
+  sentMessages     ApplicationMessage[]
 
   @@map("users")
 }
@@ -148,9 +149,26 @@ model Application {
   student   StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   professor ProfessorProfile @relation(fields: [professorId], references: [id], onDelete: Cascade)
   project   ResearchProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  messages  ApplicationMessage[]
 
   @@unique([studentId, professorId, projectId])
   @@map("applications")
+}
+
+// ─── Application Messages (private thread per application) ──────────────────
+
+model ApplicationMessage {
+  id            String   @id @default(cuid())
+  applicationId String
+  senderId      String // User id — always the applicant's student or the posting professor
+  body          String
+  createdAt     DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  sender      User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId, createdAt])
+  @@map("application_messages")
 }
 
 // ─── Saved Professors (Bookmarks) ────────────────────────────────────────────
