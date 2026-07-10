@@ -73,16 +73,21 @@ export async function submitApplication(req: AuthRequest, res: Response): Promis
     include: { project: { select: { title: true } } },
   });
 
-  // Notify professor
-  await prisma.notification.create({
-    data: {
-      userId: professor.userId,
-      type: 'APPLICATION_RECEIVED',
-      title: 'New application received',
-      message: `${studentProfile.firstName} ${studentProfile.lastName} applied to ${application.project?.title ?? 'your research group'}`,
-      metadata: { applicationId: application.id },
-    },
-  });
+  // Notify professor. The application is already saved — never fail the
+  // request over a notification hiccup.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId: professor.userId,
+        type: 'APPLICATION_RECEIVED',
+        title: 'New application received',
+        message: `${studentProfile.firstName} ${studentProfile.lastName} applied to ${application.project?.title ?? 'your research group'}`,
+        metadata: { applicationId: application.id },
+      },
+    });
+  } catch (err) {
+    console.warn('Failed to create application notification:', err);
+  }
 
   const projectTitle = application.project?.title ?? 'your research group';
   try {

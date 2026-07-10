@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Users } from 'lucide-react';
+import { Users, X } from 'lucide-react';
 import { applicationsApi } from '../../api/applications';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
@@ -22,16 +22,34 @@ const TABS: { label: string; value: string }[] = [
 export default function ApplicationsManagementPage() {
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const projectId = searchParams.get('project') ?? undefined;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['professor-applications', { status, page }],
-    queryFn: () => applicationsApi.getReceived({ status: status || undefined, page, limit: 15 }),
+    queryKey: ['professor-applications', { status, page, projectId }],
+    queryFn: () => applicationsApi.getReceived({ status: status || undefined, project: projectId, page, limit: 15 }),
     placeholderData: (prev) => prev,
   });
+
+  const projectTitle = projectId
+    ? data?.data.find((a) => a.project?.id === projectId)?.project?.title
+    : undefined;
 
   return (
     <DashboardLayout>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Applications</h1>
+
+      {projectId && (
+        <div className="mb-4">
+          <button
+            onClick={() => { setSearchParams({}); setPage(1); }}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 text-primary-700 ring-1 ring-primary-600/15 px-3 py-1.5 text-sm font-medium hover:bg-primary-100 transition-colors"
+          >
+            Filtered by project{projectTitle ? `: ${projectTitle}` : ''}
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto">

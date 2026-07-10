@@ -104,7 +104,7 @@ export default function ApplicationDetailPage() {
             </div>
             {student.cvFilePath && (
               <a
-                href={`/${student.cvFilePath.replace(/\\/g, '/')}`}
+                href={student.cvFilePath.startsWith('http') ? student.cvFilePath : `/${student.cvFilePath.replace(/\\/g, '/')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary w-full justify-center mt-4 gap-2"

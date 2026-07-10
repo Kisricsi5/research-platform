@@ -81,7 +81,7 @@ export default function ProjectsManagementPage() {
       )}
 
       <Modal open={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Project" size="sm">
-        <p className="text-sm text-gray-600 mb-6">Are you sure you want to delete this project? All applications will also be deleted. This cannot be undone.</p>
+        <p className="text-sm text-gray-600 mb-6">Are you sure you want to delete this project? This cannot be undone. Applications you've already received are kept and will show as general applications to your lab.</p>
         <div className="flex gap-3">
           <button onClick={() => setDeleteId(null)} className="btn-secondary flex-1">Cancel</button>
           <button onClick={() => deleteId && deleteMutation.mutate(deleteId)} disabled={deleteMutation.isPending} className="btn-danger flex-1">
