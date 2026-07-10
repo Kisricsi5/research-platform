@@ -131,6 +131,9 @@ export default function ApplicationDetailPage() {
               </div>
             </div>
           )}
+
+          {/* Private messages with the applicant */}
+          <MessageThread applicationId={app.id} otherName={`${student.firstName} ${student.lastName}`} />
         </div>
 
         {/* Application content */}
@@ -254,9 +257,6 @@ export default function ApplicationDetailPage() {
               )}
             </div>
           )}
-
-          {/* Private messages with the applicant */}
-          <MessageThread applicationId={app.id} otherName={`${student.firstName} ${student.lastName}`} />
 
           {/* Actions */}
           <div className="card p-5">
