@@ -47,13 +47,28 @@ const ROUTES = [
     },
   },
   { path: '/projects/proj-1', expect: ["What we're looking for", 'Verified university email'], title: true, canonical: true },
-  { path: '/professors', expect: ['Ada Prof'], title: true, canonical: true },
+  {
+    path: '/professors', expect: ['Ada Prof'], title: true, canonical: true,
+    // Same slide-over filter pattern as /projects: open, apply a filter, close,
+    // and confirm the list survives and the applied-filter chip shows.
+    interact: async (page) => {
+      await page.click('button:has-text("Filters")');
+      await page.check('aside[aria-label="Filters"] input[type="checkbox"]');
+      await page.click('button:has-text("Show results")');
+      await page.waitForTimeout(600);
+      const body = await page.evaluate(() => document.body.innerText);
+      if (!body.includes('Ada Prof')) throw new Error('researcher list did not render after applying filters');
+      if (!body.includes('Accepting students only')) throw new Error('applied filter chip not shown after closing panel');
+    },
+  },
   { path: '/professors/prof-1', expect: ['Accepting students', 'Verified university email'], title: true, canonical: true },
   { path: '/login', expect: ['Welcome back'], title: true, canonical: true },
   { path: '/signup', expect: ['Create your account'], title: true, canonical: true },
   { path: '/about', expect: ['About Labyro'], title: true, canonical: true },
   { path: '/privacy', expect: ['Privacy'], title: true, canonical: true },
   { path: '/terms', expect: ['Terms'], title: true, canonical: true },
+  // Unknown URLs must hit a real 404, not silently teleport home
+  { path: '/this-page-does-not-exist', expect: ['Page not found'], title: true },
   // Professor
   { path: '/professor/dashboard', token: 'prof-token', expect: ['Your lab, at a glance'] },
   { path: '/professor/projects', token: 'prof-token', expect: ['Behavioral Economics RA'] },
@@ -79,6 +94,8 @@ const ROUTES = [
     expect: ['Your cover letter', 'econometrics courses'],
   },
   { path: '/projects/proj-1?as=student', token: 'student-token', expect: ['Apply now'] },
+  // Apply page nudges the student about their CV (mock profile has no CV → amber note)
+  { path: '/student/apply/proj-1', token: 'student-token', expect: ["You haven't uploaded a CV"] },
 ];
 
 function waitFor(url, tries = 40) {

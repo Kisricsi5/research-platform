@@ -1,4 +1,4 @@
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 import { projectsApi } from '../../api/projects';
 import { professorsApi } from '../../api/professors';
 import { applicationsApi } from '../../api/applications';
+import { studentsApi } from '../../api/students';
 import { DashboardLayout } from '../../components/layout/Layout';
 import { PageSpinner } from '../../components/ui/Spinner';
 import Spinner from '../../components/ui/Spinner';
@@ -35,6 +36,13 @@ export default function ApplyPage() {
     queryKey: ['professor', project?.professorId ?? professorIdParam],
     queryFn: () => professorsApi.getById((project?.professorId ?? professorIdParam)!),
     enabled: !!(project?.professorId ?? professorIdParam),
+  });
+
+  // The student's own profile, only to tell them whether their CV will ride
+  // along. Never blocks submission — the note is informational.
+  const { data: studentProfile } = useQuery({
+    queryKey: ['student-profile'],
+    queryFn: studentsApi.getProfile,
   });
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
@@ -107,6 +115,21 @@ I am a [year] student in [major] at [university], and I am writing to express my
               placeholder="e.g., Available 15 hours/week starting September, prefer mornings..."
             />
           </div>
+
+          {studentProfile && (
+            studentProfile.cvFilePath ? (
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                Your profile and CV are attached automatically.
+              </div>
+            ) : (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                You haven't uploaded a CV — applications with one stand out.{' '}
+                <Link to="/student/profile" className="font-medium underline underline-offset-2">
+                  Upload one
+                </Link>
+              </div>
+            )
+          )}
 
           <div className="flex gap-3">
             <button type="button" onClick={() => navigate(-1)} className="btn-secondary btn-lg flex-1">

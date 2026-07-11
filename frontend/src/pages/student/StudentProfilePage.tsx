@@ -21,7 +21,6 @@ const schema = z.object({
   graduationYear: z.coerce.number().int().min(2020).max(2035),
   gpa: z.coerce.number().min(0).max(4.0).optional().nullable().or(z.literal('')),
   bio: z.string().max(2000).optional(),
-  isVisible: z.boolean(),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -50,7 +49,6 @@ export default function StudentProfilePage() {
         graduationYear: profile.graduationYear,
         gpa: profile.gpa ?? undefined,
         bio: profile.bio ?? '',
-        isVisible: profile.isVisible,
       });
       setSkills(profile.skills);
       setInterests(profile.researchInterests);
@@ -154,14 +152,6 @@ export default function StudentProfilePage() {
               placeholder="e.g. Neuroscience, Machine Learning…"
               badgeClass="badge-green"
             />
-          </div>
-
-          {/* Visibility */}
-          <div className="card p-4 flex items-center gap-3">
-            <input {...register('isVisible')} type="checkbox" id="visible" className="rounded border-gray-300 text-primary-600" />
-            <label htmlFor="visible" className="text-sm text-gray-700">
-              <span className="font-medium">Public profile</span> — professors can find and view your profile
-            </label>
           </div>
 
           <button type="submit" disabled={isSubmitting} className="btn-primary btn-lg">

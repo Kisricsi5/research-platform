@@ -146,7 +146,6 @@ export default function LandingPage() {
               <div className="card p-3.5 flex items-center gap-3 mb-6 shadow-float animate-fade-up">
                 <Search className="h-4 w-4 text-gray-400 shrink-0" />
                 <span className="text-sm text-gray-400">Machine learning, neuroscience, climate…</span>
-                <span className="ml-auto badge-blue">142 results</span>
               </div>
 
               {/* Cards */}
