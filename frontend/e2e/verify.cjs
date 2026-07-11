@@ -32,14 +32,18 @@ const ROUTES = [
   { path: '/', expect: ['Find research that matches'], canonical: true },
   {
     path: '/projects', expect: ['Behavioral Economics RA'], title: true, canonical: true,
-    // Filters must be applyable without breaking the list (mock ignores params,
-    // so the same listing should remain visible — this catches filter crashes).
+    // The Handshake-style filter panel must open, apply, and close without
+    // breaking the list (mock ignores params, so the listing stays visible —
+    // this catches filter crashes and panel regressions).
     interact: async (page) => {
-      await page.click('button:has-text("Junior")');
-      await page.selectOption('#maxHours', '10');
+      await page.click('button:has-text("Filters")');
+      await page.click('aside[aria-label="Filters"] button:has-text("Junior")');
+      await page.click('aside[aria-label="Filters"] button:has-text("≤ 10 h/week")');
+      await page.click('button:has-text("Show results")');
       await page.waitForTimeout(600);
-      const ok = await page.evaluate(() => document.body.innerText.includes('Behavioral Economics RA'));
-      if (!ok) throw new Error('list did not render after applying year + hours filters');
+      const body = await page.evaluate(() => document.body.innerText);
+      if (!body.includes('Behavioral Economics RA')) throw new Error('list did not render after applying filters');
+      if (!body.includes('Junior')) throw new Error('applied filter chip not shown after closing panel');
     },
   },
   { path: '/projects/proj-1', expect: ["What we're looking for", 'Verified university email'], title: true, canonical: true },
