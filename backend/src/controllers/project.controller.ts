@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { prisma } from '../config/prisma';
 import { AuthRequest } from '../types';
 import { getPagination, buildPaginationMeta } from '../utils/pagination';
+import { skillVariants } from '../utils/skillVariants';
 import { ProjectSearchQuery } from '../types';
 
 const projectSchema = z.object({
@@ -123,6 +124,10 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
       OR: [
         { title: { contains: query.q, mode: 'insensitive' } },
         { description: { contains: query.q, mode: 'insensitive' } },
+        // The search box promises "title, topic, or skill". requiredSkills is a
+        // text[]; hasSome is exact + case-sensitive, so match the query across
+        // sensible casings (see skillVariants).
+        { requiredSkills: { hasSome: skillVariants(query.q) } },
       ],
     });
   }

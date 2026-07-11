@@ -14,6 +14,7 @@ import BrowseProfessorsPage from './pages/shared/BrowseProfessorsPage';
 import BrowseProjectsPage from './pages/shared/BrowseProjectsPage';
 import ProfessorPublicProfilePage from './pages/shared/ProfessorProfilePage';
 import ProjectDetailPage from './pages/shared/ProjectDetailPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -93,8 +94,8 @@ function AppRoutes() {
       <Route path="/professor/applications" element={<ProtectedRoute role="PROFESSOR"><ApplicationsManagementPage /></ProtectedRoute>} />
       <Route path="/professor/applications/:id" element={<ProtectedRoute role="PROFESSOR"><ApplicationDetailPage /></ProtectedRoute>} />
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Fallback: a real 404, not a silent teleport home */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
