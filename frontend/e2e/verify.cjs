@@ -30,7 +30,18 @@ const AXE_PATH = require.resolve('axe-core/axe.min.js');
 const ROUTES = [
   // Public (canonical: assert the per-route <link rel="canonical"> — see below)
   { path: '/', expect: ['Find research that matches'], canonical: true },
-  { path: '/projects', expect: ['Behavioral Economics RA'], title: true, canonical: true },
+  {
+    path: '/projects', expect: ['Behavioral Economics RA'], title: true, canonical: true,
+    // Filters must be applyable without breaking the list (mock ignores params,
+    // so the same listing should remain visible — this catches filter crashes).
+    interact: async (page) => {
+      await page.click('button:has-text("Junior")');
+      await page.selectOption('#maxHours', '10');
+      await page.waitForTimeout(600);
+      const ok = await page.evaluate(() => document.body.innerText.includes('Behavioral Economics RA'));
+      if (!ok) throw new Error('list did not render after applying year + hours filters');
+    },
+  },
   { path: '/projects/proj-1', expect: ["What we're looking for", 'Verified university email'], title: true, canonical: true },
   { path: '/professors', expect: ['Ada Prof'], title: true, canonical: true },
   { path: '/professors/prof-1', expect: ['Accepting students', 'Verified university email'], title: true, canonical: true },

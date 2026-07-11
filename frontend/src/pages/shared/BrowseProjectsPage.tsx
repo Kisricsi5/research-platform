@@ -9,6 +9,7 @@ import { SkeletonGrid } from '../../components/ui/Skeleton';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { YEAR_OPTIONS } from '../../data/suggestions';
 
 const COMPENSATION_FILTERS = [
   { value: '', label: 'All' },
@@ -18,11 +19,21 @@ const COMPENSATION_FILTERS = [
   { value: 'UNPAID', label: 'Volunteer' },
 ];
 
+const HOURS_FILTERS = [
+  { value: 0, label: 'Any hours' },
+  { value: 5, label: '≤ 5 h/week' },
+  { value: 10, label: '≤ 10 h/week' },
+  { value: 15, label: '≤ 15 h/week' },
+  { value: 20, label: '≤ 20 h/week' },
+];
+
 export default function BrowseProjectsPage() {
   usePageTitle('Research Opportunities');
   const { user } = useAuth();
   const [q, setQ] = useState('');
   const [compensationType, setCompensationType] = useState('');
+  const [year, setYear] = useState('');
+  const [maxHours, setMaxHours] = useState(0);
   const [myUniversityOnly, setMyUniversityOnly] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -32,11 +43,13 @@ export default function BrowseProjectsPage() {
       : undefined;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['projects', q, compensationType, myUniversityOnly ? studentUniversity : '', page],
+    queryKey: ['projects', q, compensationType, year, maxHours, myUniversityOnly ? studentUniversity : '', page],
     queryFn: () =>
       projectsApi.list({
         q,
         compensationType: compensationType || undefined,
+        year: year || undefined,
+        maxHours: maxHours || undefined,
         university: myUniversityOnly && studentUniversity ? studentUniversity : undefined,
         page,
         limit: 12,
@@ -44,8 +57,8 @@ export default function BrowseProjectsPage() {
     placeholderData: (prev) => prev,
   });
 
-  const clearFilters = () => { setQ(''); setCompensationType(''); setMyUniversityOnly(false); setPage(1); };
-  const hasFilters = q || compensationType || myUniversityOnly;
+  const clearFilters = () => { setQ(''); setCompensationType(''); setYear(''); setMaxHours(0); setMyUniversityOnly(false); setPage(1); };
+  const hasFilters = q || compensationType || year || maxHours || myUniversityOnly;
 
   return (
     <Layout>
@@ -114,6 +127,38 @@ export default function BrowseProjectsPage() {
                 <X className="h-3.5 w-3.5" />Clear all
               </button>
             )}
+          </div>
+
+          {/* Year + time commitment */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide mr-1">Your year</span>
+            {YEAR_OPTIONS.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => { setYear(year === value ? '' : value); setPage(1); }}
+                aria-pressed={year === value}
+                className={cn(
+                  'rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150 ring-1 ring-inset',
+                  year === value
+                    ? 'bg-ink-900 text-white ring-ink-900 shadow-sm'
+                    : 'bg-white text-gray-600 ring-gray-300 hover:ring-gray-400 hover:text-gray-900',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+            <span className="mx-1 h-4 w-px bg-gray-300" aria-hidden />
+            <label htmlFor="maxHours" className="text-xs font-medium text-gray-500 uppercase tracking-wide">Time</label>
+            <select
+              id="maxHours"
+              value={maxHours}
+              onChange={(e) => { setMaxHours(Number(e.target.value)); setPage(1); }}
+              className="input w-auto py-1.5 text-sm"
+            >
+              {HOURS_FILTERS.map((h) => (
+                <option key={h.value} value={h.value}>{h.label}</option>
+              ))}
+            </select>
           </div>
         </div>
 
