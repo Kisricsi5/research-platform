@@ -75,7 +75,7 @@ const ROUTES = [
   { path: '/professor/applications', token: 'prof-token', expect: ['Milan Markovits'] },
   {
     path: '/professor/applications/app-1', token: 'prof-token',
-    expect: ['Private conversation with Milan Markovits', 'AI fit analysis', 'Update Status'],
+    expect: ['Private conversation with Milan Markovits', 'AI fit analysis', 'Update Status', 'Download CV'],
     interact: async (page) => {
       await page.fill('textarea[aria-label*="Message"]', 'Which econometrics courses have you taken?');
       await page.click('button[aria-label="Send message"]');

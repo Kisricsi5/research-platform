@@ -6,6 +6,9 @@ import { getPagination, buildPaginationMeta } from '../utils/pagination';
 import { ProfessorSearchQuery } from '../types';
 import { analyzeFit, isAiConfigured } from '../utils/aiFit';
 import { sendApplicationStatusEmail } from '../utils/email';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { s3Client, S3_BUCKET } from '../config/s3';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -266,6 +269,49 @@ export async function analyzeApplicationFit(req: AuthRequest, res: Response): Pr
     console.error('AI fit analysis failed:', err);
     res.status(502).json({ error: 'AI analysis is temporarily unavailable. Please try again.' });
   }
+}
+
+/**
+ * Short-lived signed download link for an applicant's CV.
+ * The S3 bucket correctly blocks public reads (CVs are personal data), so the
+ * raw object URL 403s. Only the professor who owns the application can mint
+ * a link, and it expires in 5 minutes.
+ */
+export async function getApplicationCvLink(req: AuthRequest, res: Response): Promise<void> {
+  const profile = await prisma.professorProfile.findUnique({ where: { userId: req.user!.userId } });
+  if (!profile) {
+    res.status(404).json({ error: 'Profile not found' });
+    return;
+  }
+
+  const app = await prisma.application.findFirst({
+    where: { id: req.params.id, professorId: profile.id },
+    include: { student: { select: { cvFilePath: true } } },
+  });
+  if (!app) {
+    res.status(404).json({ error: 'Application not found' });
+    return;
+  }
+  if (!app.student.cvFilePath) {
+    res.status(404).json({ error: 'This applicant has not uploaded a CV.' });
+    return;
+  }
+
+  // cvFilePath is stored as the full S3 object URL; derive the object key.
+  let key: string;
+  try {
+    key = decodeURIComponent(new URL(app.student.cvFilePath).pathname.replace(/^\//, ''));
+  } catch {
+    res.status(404).json({ error: 'The CV file reference is invalid. Ask the applicant to re-upload.' });
+    return;
+  }
+
+  const url = await getSignedUrl(
+    s3Client,
+    new GetObjectCommand({ Bucket: S3_BUCKET, Key: key }),
+    { expiresIn: 300 },
+  );
+  res.json({ url });
 }
 
 export async function updateApplicationStatus(req: AuthRequest, res: Response): Promise<void> {
