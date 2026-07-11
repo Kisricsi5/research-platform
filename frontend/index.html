@@ -11,14 +11,22 @@
     <meta name="apple-mobile-web-app-title" content="Labyro" />
     <title>Labyro — Find Your Research Opportunity</title>
     <meta name="description" content="Labyro is the marketplace where university students find research positions and labs find their next great researcher. Verified listings, structured applications, one pipeline." />
-    <link rel="canonical" href="https://labyro.com/" />
+    <!-- No static <link rel="canonical"> or og:url here: they were hardcoded to
+         the homepage and are wrong for every other route. The canonical link and
+         the per-route description are now set at runtime, per route, by
+         usePageMeta (src/hooks/usePageTitle.ts). -->
 
-    <!-- Open Graph (link previews: iMessage, Slack, LinkedIn, Facebook) -->
+    <!-- Open Graph (link previews: iMessage, Slack, LinkedIn, Facebook).
+         og:title / og:description / og:image are intentionally STATIC: social
+         crawlers (iMessage, Slack, Facebook, LinkedIn, X) do NOT run JS, so they
+         only ever see these index.html values — a client-side hook cannot reach
+         them. Making OG per-route requires prerendering / SSR (a prerender step or
+         edge meta injection); until then non-home shares preview as the homepage
+         card. og:url is omitted for the same reason (a static one would lie). -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Labyro" />
     <meta property="og:title" content="Labyro — Find Your Research Opportunity" />
     <meta property="og:description" content="The marketplace connecting university students with research labs. Verified listings, structured applications, one pipeline." />
-    <meta property="og:url" content="https://labyro.com/" />
     <meta property="og:image" content="https://labyro.com/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

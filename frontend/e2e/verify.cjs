@@ -21,20 +21,24 @@ const { chromium } = require('playwright');
 const MOCK_PORT = 5998;
 const PREVIEW_PORT = 4199;
 const BASE = `http://localhost:${PREVIEW_PORT}`;
+// Production origin the app stamps into per-route <link rel="canonical"> (must
+// match SITE_URL in src/config.ts). Rendered at localhost, the canonical still
+// points at the real production URL for the route — that is what we assert.
+const SITE_URL = 'https://labyro.com';
 const AXE_PATH = require.resolve('axe-core/axe.min.js');
 
 const ROUTES = [
-  // Public
-  { path: '/', expect: ['Find research that matches'] },
-  { path: '/projects', expect: ['Behavioral Economics RA'], title: true },
-  { path: '/projects/proj-1', expect: ["What we're looking for", 'Verified university email'], title: true },
-  { path: '/professors', expect: ['Ada Prof'], title: true },
-  { path: '/professors/prof-1', expect: ['Accepting students', 'Verified university email'], title: true },
-  { path: '/login', expect: ['Welcome back'], title: true },
-  { path: '/signup', expect: ['Create your account'], title: true },
-  { path: '/about', expect: ['About Labyro'], title: true },
-  { path: '/privacy', expect: ['Privacy'], title: true },
-  { path: '/terms', expect: ['Terms'], title: true },
+  // Public (canonical: assert the per-route <link rel="canonical"> — see below)
+  { path: '/', expect: ['Find research that matches'], canonical: true },
+  { path: '/projects', expect: ['Behavioral Economics RA'], title: true, canonical: true },
+  { path: '/projects/proj-1', expect: ["What we're looking for", 'Verified university email'], title: true, canonical: true },
+  { path: '/professors', expect: ['Ada Prof'], title: true, canonical: true },
+  { path: '/professors/prof-1', expect: ['Accepting students', 'Verified university email'], title: true, canonical: true },
+  { path: '/login', expect: ['Welcome back'], title: true, canonical: true },
+  { path: '/signup', expect: ['Create your account'], title: true, canonical: true },
+  { path: '/about', expect: ['About Labyro'], title: true, canonical: true },
+  { path: '/privacy', expect: ['Privacy'], title: true, canonical: true },
+  { path: '/terms', expect: ['Terms'], title: true, canonical: true },
   // Professor
   { path: '/professor/dashboard', token: 'prof-token', expect: ['Your lab, at a glance'] },
   { path: '/professor/projects', token: 'prof-token', expect: ['Behavioral Economics RA'] },
@@ -125,6 +129,29 @@ function waitFor(url, tries = 40) {
       if (route.title) {
         const title = await page.title();
         if (!title.includes('Labyro')) failures.push(`${route.path}: bad document title "${title}"`);
+      }
+
+      // Per-route canonical: usePageMeta must stamp <link rel="canonical"> with
+      // THIS route's production URL (SITE_URL + pathname), never the homepage.
+      // This is what catches the old index.html bug where every route claimed
+      // https://labyro.com/ as its canonical. og:url must NOT come back statically.
+      if (route.canonical) {
+        const expected = SITE_URL + route.path.split('?')[0];
+        const found = await page.evaluate(() => {
+          const link = document.head.querySelector('link[rel="canonical"]');
+          const og = document.head.querySelector('meta[property="og:url"]');
+          const links = document.head.querySelectorAll('link[rel="canonical"]').length;
+          return { href: link ? link.href : null, ogUrl: og ? og.getAttribute('content') : null, count: links };
+        });
+        if (found.href !== expected) {
+          failures.push(`${route.path}: canonical "${found.href}" !== expected "${expected}"`);
+        }
+        if (found.count !== 1) {
+          failures.push(`${route.path}: expected exactly 1 canonical link, found ${found.count}`);
+        }
+        if (found.ogUrl) {
+          failures.push(`${route.path}: static og:url reintroduced ("${found.ogUrl}") — per-route OG needs prerender, not a hardcoded tag`);
+        }
       }
 
       if (pageErrors.length) failures.push(`${route.path}: page error(s): ${pageErrors.join(' | ')}`);

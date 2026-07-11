@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
+import { usePageMeta } from '../hooks/usePageTitle';
 
 /* ---------- Illustrative preview data (marked as sample in UI) ---------- */
 const sampleOpportunities = [
@@ -82,6 +83,9 @@ const painPoints = [
 ];
 
 export default function LandingPage() {
+  // Home keeps the site-default title but needs its own canonical (https://labyro.com/)
+  // now that the static one is gone from index.html.
+  usePageMeta();
   const { user } = useAuth();
 
   return (
