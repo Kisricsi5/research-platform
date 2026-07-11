@@ -23,7 +23,6 @@ export async function sendVerificationEmail(to: string, token: string): Promise<
         Verify Email
       </a>
       <p>Or copy this link: ${url}</p>
-      <p>This link expires in 24 hours.</p>
     `,
   });
 }

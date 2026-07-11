@@ -135,8 +135,8 @@ export default function ProjectFormPage() {
                 <input {...register('hoursPerWeek')} type="number" min="1" max="60" className="input" placeholder="e.g., 15" />
               </div>
               <div>
-                <label className="label">Compensation</label>
-                <select {...register('compensationType')} className="input">
+                <label htmlFor="compensationType" className="label">Compensation</label>
+                <select id="compensationType" {...register('compensationType')} className="input">
                   <option value="UNPAID">Unpaid / Volunteer</option>
                   <option value="CREDIT">Course Credit</option>
                   <option value="PAID">Paid</option>
@@ -150,12 +150,12 @@ export default function ProjectFormPage() {
                 <input {...register('duration')} className="input" placeholder="e.g., Summer 2025, One semester" />
               </div>
               <div>
-                <label className="label">Application Deadline <span className="text-gray-400 font-normal">(optional)</span></label>
-                <input {...register('applicationDeadline')} type="date" className="input" />
+                <label htmlFor="applicationDeadline" className="label">Application Deadline <span className="text-gray-500 font-normal">(optional)</span></label>
+                <input id="applicationDeadline" {...register('applicationDeadline')} type="date" className="input" />
               </div>
             </div>
             <div>
-              <label className="label">Preferred Years <span className="text-gray-400 font-normal">(select all that apply — none selected means any year)</span></label>
+              <label className="label">Preferred Years <span className="text-gray-500 font-normal">(select all that apply — none selected means any year)</span></label>
               <div className="flex flex-wrap gap-2">
                 {YEAR_OPTIONS.map(({ value, label }) => (
                   <button
@@ -192,7 +192,7 @@ export default function ProjectFormPage() {
 
           {/* Preferred Majors */}
           <div className="card p-6">
-            <h2 className="font-semibold text-gray-900 mb-1">Preferred Majors <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
+            <h2 className="font-semibold text-gray-900 mb-1">Preferred Majors <span className="text-gray-500 font-normal text-sm">(optional)</span></h2>
             <p className="helper mb-4">Start typing to pick from common majors, or add your own.</p>
             <TagPicker
               selected={majors}

@@ -71,7 +71,11 @@ export default function ProjectsManagementPage() {
                 <Link to={`/professor/projects/${p.id}/edit`} className="btn-secondary btn-sm gap-1">
                   <Edit className="h-3.5 w-3.5" />Edit
                 </Link>
-                <button onClick={() => setDeleteId(p.id)} className="btn-secondary btn-sm gap-1 text-red-600 border-red-200 hover:bg-red-50">
+                <button
+                  onClick={() => setDeleteId(p.id)}
+                  aria-label={`Delete project: ${p.title}`}
+                  className="btn-secondary btn-sm gap-1 text-red-600 border-red-200 hover:bg-red-50"
+                >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -81,7 +85,7 @@ export default function ProjectsManagementPage() {
       )}
 
       <Modal open={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Project" size="sm">
-        <p className="text-sm text-gray-600 mb-6">Are you sure you want to delete this project? All applications will also be deleted. This cannot be undone.</p>
+        <p className="text-sm text-gray-600 mb-6">Are you sure you want to delete this project? This cannot be undone. Applications you've already received are kept and will show as general applications to your lab.</p>
         <div className="flex gap-3">
           <button onClick={() => setDeleteId(null)} className="btn-secondary flex-1">Cancel</button>
           <button onClick={() => deleteId && deleteMutation.mutate(deleteId)} disabled={deleteMutation.isPending} className="btn-danger flex-1">

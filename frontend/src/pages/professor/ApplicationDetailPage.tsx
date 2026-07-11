@@ -104,7 +104,7 @@ export default function ApplicationDetailPage() {
             </div>
             {student.cvFilePath && (
               <a
-                href={`/${student.cvFilePath.replace(/\\/g, '/')}`}
+                href={student.cvFilePath.startsWith('http') ? student.cvFilePath : `/${student.cvFilePath.replace(/\\/g, '/')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary w-full justify-center mt-4 gap-2"
@@ -279,7 +279,7 @@ export default function ApplicationDetailPage() {
             </div>
 
             <div className="mb-4">
-              <label className="label">Private Notes <span className="text-gray-400 font-normal">(only visible to you)</span></label>
+              <label className="label">Private Notes <span className="text-gray-500 font-normal">(only visible to you)</span></label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}

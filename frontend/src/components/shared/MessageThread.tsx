@@ -80,7 +80,7 @@ export default function MessageThread({ applicationId, otherName }: MessageThrea
                   mine ? 'bg-primary-600 text-white rounded-br-md' : 'bg-gray-100 text-gray-800 rounded-bl-md'
                 }`}>
                   <p className="text-sm whitespace-pre-line leading-relaxed break-words">{m.body}</p>
-                  <p className={`text-[11px] mt-1 ${mine ? 'text-primary-100/80' : 'text-gray-400'}`}>
+                  <p className={`text-[11px] mt-1 ${mine ? 'text-white' : 'text-gray-600'}`}>
                     {mine ? 'You' : otherName} · {timeAgo(m.createdAt)}
                   </p>
                 </div>
@@ -116,7 +116,7 @@ export default function MessageThread({ applicationId, otherName }: MessageThrea
           Send
         </button>
       </div>
-      <p className="text-[11px] text-gray-400 mt-2">Enter to send · Shift+Enter for a new line</p>
+      <p className="text-[11px] text-gray-500 mt-2">Enter to send · Shift+Enter for a new line</p>
     </div>
   );
 }

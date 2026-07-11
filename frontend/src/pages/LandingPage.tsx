@@ -314,7 +314,7 @@ export default function LandingPage() {
               </ol>
               <Link
                 to="/signup?role=professor"
-                className="btn mt-9 bg-emerald-600 text-white px-4 py-2 text-sm shadow-[0_1px_2px_rgba(16,185,129,.35)] hover:bg-emerald-700 hover:-translate-y-px active:translate-y-0 focus-visible:ring-emerald-500"
+                className="btn mt-9 bg-emerald-700 text-white px-4 py-2 text-sm shadow-[0_1px_2px_rgba(16,185,129,.35)] hover:bg-emerald-800 hover:-translate-y-px active:translate-y-0 focus-visible:ring-emerald-500"
               >
                 Post your first opportunity <ArrowRight className="h-4 w-4" />
               </Link>

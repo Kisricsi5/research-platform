@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import path from 'path';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 
@@ -60,14 +59,17 @@ app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many auth attempts' });
+// Rate limiting. Generous on purpose: whole campuses share a NAT IP, and the
+// app polls notifications — a strict per-IP cap here reads as "site is down".
+// Sensitive auth endpoints get their own tight limiter in auth.routes.
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please slow down and try again shortly.' },
+});
 app.use('/api', limiter);
-app.use('/api/auth', authLimiter);
-
-// Static files (uploaded CVs, avatars)
-app.use('/uploads', express.static(path.resolve(env.upload.dir)));
 
 // Routes
 app.use('/api/auth', authRoutes);

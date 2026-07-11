@@ -90,13 +90,13 @@ export default function StudentProfilePage() {
             <h2 className="font-semibold text-gray-900">Basic Information</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="label">First Name</label>
-                <input {...register('firstName')} className="input" />
+                <label htmlFor="firstName" className="label">First Name</label>
+                <input id="firstName" {...register('firstName')} className="input" />
                 {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName.message}</p>}
               </div>
               <div>
-                <label className="label">Last Name</label>
-                <input {...register('lastName')} className="input" />
+                <label htmlFor="lastName" className="label">Last Name</label>
+                <input id="lastName" {...register('lastName')} className="input" />
                 {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName.message}</p>}
               </div>
             </div>
@@ -112,13 +112,13 @@ export default function StudentProfilePage() {
                 {errors.major && <p className="text-xs text-red-500 mt-1">{errors.major.message}</p>}
               </div>
               <div>
-                <label className="label">Graduation Year</label>
-                <input {...register('graduationYear')} type="number" className="input" />
+                <label htmlFor="graduationYear" className="label">Graduation Year</label>
+                <input id="graduationYear" {...register('graduationYear')} type="number" className="input" />
                 {errors.graduationYear && <p className="text-xs text-red-500 mt-1">{errors.graduationYear.message}</p>}
               </div>
             </div>
             <div>
-              <label className="label">GPA <span className="text-gray-400 font-normal">(optional)</span></label>
+              <label className="label">GPA <span className="text-gray-500 font-normal">(optional)</span></label>
               <input {...register('gpa')} type="number" step="0.01" min="0" max="4.0" className="input w-32" placeholder="3.8" />
             </div>
           </div>

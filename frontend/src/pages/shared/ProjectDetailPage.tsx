@@ -195,19 +195,19 @@ export default function ProjectDetailPage() {
           <aside className="lg:sticky lg:top-24 space-y-5">
             <div className="card p-6">
               <h2 className="text-sm font-semibold text-ink-900 uppercase tracking-wide mb-5">At a glance</h2>
-              <dl className="space-y-4">
+              <ul className="space-y-4 list-none">
                 {facts.map(({ icon: Icon, label, value, danger }) => (
-                  <div key={label} className="flex items-start gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-primary-50 ring-1 ring-primary-600/10 flex items-center justify-center shrink-0">
+                  <li key={label} className="flex items-start gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-primary-50 ring-1 ring-primary-600/10 flex items-center justify-center shrink-0" aria-hidden>
                       <Icon className="h-4 w-4 text-primary-600" />
                     </div>
                     <div>
-                      <dt className="text-xs text-gray-500">{label}</dt>
-                      <dd className={`text-sm font-semibold ${danger ? 'text-red-600' : 'text-ink-900'}`}>{value}</dd>
+                      <p className="text-xs text-gray-500">{label}</p>
+                      <p className={`text-sm font-semibold ${danger ? 'text-red-600' : 'text-ink-900'}`}>{value}</p>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </dl>
+              </ul>
 
               <div className="mt-6 pt-5 border-t border-gray-100">
                 {canApply ? (

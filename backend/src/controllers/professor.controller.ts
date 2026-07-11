@@ -5,6 +5,7 @@ import { AuthRequest } from '../types';
 import { getPagination, buildPaginationMeta } from '../utils/pagination';
 import { ProfessorSearchQuery } from '../types';
 import { analyzeFit, isAiConfigured } from '../utils/aiFit';
+import { sendApplicationStatusEmail } from '../utils/email';
 
 const profileSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -157,11 +158,12 @@ export async function getReceivedApplications(req: AuthRequest, res: Response): 
     return;
   }
 
-  const { status, page, limit } = req.query as { status?: string; page?: string; limit?: string };
+  const { status, page, limit, project } = req.query as { status?: string; page?: string; limit?: string; project?: string };
   const { take, skip, page: pageNum } = getPagination(page, limit);
 
   const where: Record<string, unknown> = { professorId: profile.id };
   if (status) where.status = status;
+  if (project) where.projectId = project;
 
   const [applications, total] = await Promise.all([
     prisma.application.findMany({
@@ -282,7 +284,10 @@ export async function updateApplicationStatus(req: AuthRequest, res: Response): 
 
   const app = await prisma.application.findFirst({
     where: { id: req.params.id, professorId: profile.id },
-    include: { student: { select: { userId: true, firstName: true } } },
+    include: {
+      student: { select: { userId: true, firstName: true, lastName: true, user: { select: { email: true } } } },
+      project: { select: { title: true } },
+    },
   });
 
   if (!app) {
@@ -290,21 +295,42 @@ export async function updateApplicationStatus(req: AuthRequest, res: Response): 
     return;
   }
 
+  const statusChanged = app.status !== status;
+
   const updated = await prisma.application.update({
     where: { id: req.params.id },
     data: { status, ...(professorNotes !== undefined ? { professorNotes } : {}) },
   });
 
-  // Create in-app notification for the student
-  await prisma.notification.create({
-    data: {
-      userId: app.student.userId,
-      type: 'STATUS_UPDATE',
-      title: 'Application status updated',
-      message: `Your application status changed to: ${status.replace('_', ' ')}`,
-      metadata: { applicationId: app.id, status },
-    },
-  });
+  // Notify the student in-app and by email. Never fail the request over a
+  // notification — the status update itself already succeeded.
+  if (statusChanged) {
+    try {
+      await prisma.notification.create({
+        data: {
+          userId: app.student.userId,
+          type: 'STATUS_UPDATE',
+          title: 'Application status updated',
+          message: `Your application status changed to: ${status.replace(/_/g, ' ')}`,
+          metadata: { applicationId: app.id, status },
+        },
+      });
+    } catch (err) {
+      console.warn('Failed to create status notification:', err);
+    }
+
+    try {
+      await sendApplicationStatusEmail(
+        app.student.user.email,
+        app.student.firstName,
+        `${profile.firstName} ${profile.lastName}`,
+        app.project?.title ?? 'General application',
+        status,
+      );
+    } catch {
+      console.warn('Failed to send status email');
+    }
+  }
 
   res.json(updated);
 }

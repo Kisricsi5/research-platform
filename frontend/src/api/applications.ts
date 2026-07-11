@@ -21,7 +21,7 @@ export const applicationsApi = {
     api.get<Application>(`/student/applications/${id}`).then((r) => r.data),
 
   // Professor
-  getReceived: (params?: { status?: string; page?: number; limit?: number }) =>
+  getReceived: (params?: { status?: string; page?: number; limit?: number; project?: string }) =>
     api.get<PaginatedResponse<Application>>('/professor/applications', { params }).then((r) => r.data),
 
   getReceivedById: (id: string) =>
