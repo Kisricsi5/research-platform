@@ -109,6 +109,9 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
   const { take, skip, page } = getPagination(query.page, query.limit);
 
   const where: Record<string, unknown> = {};
+  // Combinable filters go into AND so multiple OR-groups (search text, year,
+  // hours) can coexist without clobbering each other.
+  const and: Record<string, unknown>[] = [];
 
   if (query.isActive !== 'false') {
     where.isActive = true;
@@ -116,14 +119,40 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
   }
 
   if (query.q) {
-    where.OR = [
-      { title: { contains: query.q, mode: 'insensitive' } },
-      { description: { contains: query.q, mode: 'insensitive' } },
-    ];
+    and.push({
+      OR: [
+        { title: { contains: query.q, mode: 'insensitive' } },
+        { description: { contains: query.q, mode: 'insensitive' } },
+      ],
+    });
   }
 
   if (query.compensationType) {
     where.compensationType = query.compensationType;
+  }
+
+  // A project matches a year filter when it targets that year — or is open to
+  // any year (empty preferredYears means "no preference").
+  if (query.year) {
+    and.push({
+      OR: [
+        { preferredYears: { has: query.year } },
+        { preferredYears: { isEmpty: true } },
+      ],
+    });
+  }
+
+  // Max weekly hours; projects that didn't specify hours stay visible.
+  if (query.maxHours) {
+    const max = parseInt(query.maxHours, 10);
+    if (!Number.isNaN(max) && max > 0) {
+      and.push({
+        OR: [
+          { hoursPerWeek: { lte: max } },
+          { hoursPerWeek: null },
+        ],
+      });
+    }
   }
 
   if (query.university) {
@@ -134,6 +163,8 @@ export async function listProjects(req: AuthRequest, res: Response): Promise<voi
       university: { equals: query.university, mode: 'insensitive' },
     };
   }
+
+  if (and.length) where.AND = and;
 
   const [projects, total] = await Promise.all([
     prisma.researchProject.findMany({

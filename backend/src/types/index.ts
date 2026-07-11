@@ -30,4 +30,6 @@ export interface ProjectSearchQuery extends PaginationQuery {
   compensationType?: string;
   isActive?: string;
   university?: string;
+  year?: string;
+  maxHours?: string;
 }

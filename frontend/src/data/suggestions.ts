@@ -31,7 +31,33 @@ export const COMMON_SKILLS: string[] = [
   // Communication & general
   'Scientific Writing', 'Technical Writing', 'Grant Writing', 'Academic Presentations',
   'Poster Design', 'LaTeX', 'Data Entry', 'Project Management', 'Mentoring', 'Teamwork',
-  'Critical Thinking', 'Attention to Detail', 'Time Management', 'Spanish', 'Mandarin', 'French',
+  'Critical Thinking', 'Attention to Detail', 'Time Management',
+
+  // Office & productivity
+  'Microsoft Office', 'Microsoft Word', 'PowerPoint', 'Outlook',
+  'Google Workspace', 'Google Docs', 'Google Sheets', 'Google Slides',
+  'Notion', 'Airtable', 'Calendar Management', 'Scheduling', 'Organization',
+  'Meeting Notes', 'Email Communication', 'Report Writing', 'Multitasking',
+
+  // Design & media
+  'Canva', 'Figma', 'Adobe Photoshop', 'Adobe Illustrator', 'Adobe InDesign',
+  'Graphic Design', 'Video Editing', 'Audio Editing', 'Photography',
+  'Podcast Production', 'Social Media Management', 'Content Creation',
+
+  // Business & outreach
+  'Marketing', 'Digital Marketing', 'Market Research', 'Customer Service',
+  'Sales', 'Negotiation', 'Fundraising', 'Event Planning', 'Budgeting',
+  'Bookkeeping', 'Accounting', 'Financial Analysis', 'Grant Research',
+  'Community Outreach', 'Volunteer Coordination',
+
+  // People & communication
+  'Public Speaking', 'Presentation Skills', 'Communication', 'Leadership',
+  'Team Management', 'Conflict Resolution', 'Problem Solving', 'Adaptability',
+  'Tutoring', 'Teaching', 'Translation', 'Transcription',
+
+  // Languages
+  'Spanish', 'Mandarin', 'French', 'German', 'Japanese', 'Korean', 'Arabic',
+  'Hindi', 'Portuguese', 'Italian', 'Russian',
 ];
 
 export const COMMON_MAJORS: string[] = [
