@@ -36,6 +36,20 @@ export default function ApplicationDetailPage() {
   const [notes, setNotes] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus>('PENDING');
   const [fit, setFit] = useState<FitAnalysis | null>(null);
+  const [cvLoading, setCvLoading] = useState(false);
+
+  // CVs are private in S3 — fetch a short-lived signed link, then open it
+  const downloadCv = async () => {
+    setCvLoading(true);
+    try {
+      const { url } = await applicationsApi.getCvLink(id!);
+      window.open(url, '_blank', 'noopener');
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Could not open the CV. Please try again.');
+    } finally {
+      setCvLoading(false);
+    }
+  };
 
   const { data: config } = useQuery({
     queryKey: ['config'],
@@ -103,14 +117,14 @@ export default function ApplicationDetailPage() {
               )}
             </div>
             {student.cvFilePath && (
-              <a
-                href={student.cvFilePath.startsWith('http') ? student.cvFilePath : `/${student.cvFilePath.replace(/\\/g, '/')}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={downloadCv}
+                disabled={cvLoading}
                 className="btn-secondary w-full justify-center mt-4 gap-2"
               >
-                <Download className="h-4 w-4" />Download CV
-              </a>
+                {cvLoading ? <Spinner className="h-4 w-4" /> : <Download className="h-4 w-4" />}
+                Download CV
+              </button>
             )}
           </div>
 

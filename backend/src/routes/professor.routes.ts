@@ -21,6 +21,7 @@ router.delete('/projects/:id', asyncHandler(project.deleteProject));
 
 router.get('/applications', asyncHandler(professor.getReceivedApplications));
 router.get('/applications/:id', asyncHandler(professor.getApplicationById));
+router.get('/applications/:id/cv', asyncHandler(professor.getApplicationCvLink));
 router.post('/applications/:id/analyze', asyncHandler(professor.analyzeApplicationFit));
 router.put('/applications/:id/status', asyncHandler(professor.updateApplicationStatus));
 

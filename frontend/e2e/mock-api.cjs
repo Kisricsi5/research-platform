@@ -51,7 +51,9 @@ const application = {
   id: 'app-1', studentId: 'stu-1', professorId: 'prof-1', projectId: 'proj-1',
   coverLetter: 'I would love to join your lab.\nI have taken econometrics.',
   availability: '10 hrs/week', status: 'PENDING', professorNotes: null,
-  createdAt: now(), updatedAt: now(), student, project,
+  createdAt: now(), updatedAt: now(),
+  student: { ...student, cvFilePath: 'https://research-platform-files.s3.us-east-2.amazonaws.com/cvs/test.pdf' },
+  project,
 };
 
 const users = {
@@ -86,6 +88,7 @@ const routes = {
   'GET /api/professor/projects': [{ ...project, _count: { applications: 1 } }],
   'GET /api/professor/applications': paginated([application]),
   'GET /api/professor/applications/app-1': application,
+  'GET /api/professor/applications/app-1/cv': { url: 'http://localhost:5998/api/config' },
 
   // Student side
   'GET /api/student/profile': student,

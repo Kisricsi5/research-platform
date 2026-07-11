@@ -32,6 +32,10 @@ export const applicationsApi = {
 
   analyzeFit: (id: string) =>
     api.post<FitAnalysis>(`/professor/applications/${id}/analyze`).then((r) => r.data),
+
+  // CVs live in a private bucket; this returns a 5-minute signed download URL
+  getCvLink: (id: string) =>
+    api.get<{ url: string }>(`/professor/applications/${id}/cv`).then((r) => r.data),
 };
 
 export const messagesApi = {

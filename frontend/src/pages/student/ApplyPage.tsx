@@ -107,7 +107,7 @@ I am a [year] student in [major] at [university], and I am writing to express my
           </div>
 
           <div className="card p-6">
-            <label className="label">Availability <span className="text-gray-400 font-normal">(optional)</span></label>
+            <label className="label">Availability <span className="text-gray-500 font-normal">(optional)</span></label>
             <textarea
               {...register('availability')}
               rows={3}
