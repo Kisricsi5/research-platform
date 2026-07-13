@@ -29,7 +29,25 @@ const AXE_PATH = require.resolve('axe-core/axe.min.js');
 
 const ROUTES = [
   // Public (canonical: assert the per-route <link rel="canonical"> — see below)
-  { path: '/', expect: ['Find research that matches'], canonical: true },
+  {
+    path: '/', expect: ['Find research that matches', 'Labyro in 12 seconds'], canonical: true,
+    // The pitch video must exist, carry a captions track (no-captions <video>
+    // is an axe-critical), and actually autoplay (muted+playsinline).
+    interact: async (page) => {
+      await page.waitForTimeout(500);
+      const v = await page.evaluate(() => {
+        const el = document.querySelector('video');
+        if (!el) return { missing: true };
+        return {
+          hasCaptions: !!el.querySelector('track[kind="captions"]'),
+          playing: !el.paused && el.readyState >= 2,
+        };
+      });
+      if (v.missing) throw new Error('pitch video not found on landing page');
+      if (!v.hasCaptions) throw new Error('pitch video is missing its captions track');
+      if (!v.playing) throw new Error('pitch video is not autoplaying');
+    },
+  },
   {
     path: '/projects', expect: ['Behavioral Economics RA'], title: true, canonical: true,
     // The Handshake-style filter panel must open, apply, and close without

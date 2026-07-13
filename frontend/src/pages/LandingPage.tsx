@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   GraduationCap, BookOpen, Search, FileText, Bell, CheckCircle, ArrowRight,
@@ -87,6 +88,19 @@ export default function LandingPage() {
   // now that the static one is gone from index.html.
   usePageMeta();
   const { user } = useAuth();
+  // Autoplaying motion is an accessibility hazard for some users; give them a
+  // paused player with controls instead of a silent loop.
+  const prefersReducedMotion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pitchVideoRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const v = pitchVideoRef.current;
+    if (!v || prefersReducedMotion) return;
+    // React sets `muted` as a property, not an attribute, which some autoplay
+    // policies don't honor — force it and start playback ourselves.
+    v.muted = true;
+    v.play().catch(() => { /* autoplay denied: the first frame stays as a still */ });
+  }, [prefersReducedMotion]);
 
   return (
     <Layout>
@@ -201,6 +215,38 @@ export default function LandingPage() {
                 {label}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ 12-SECOND PITCH ============ */}
+      <section className="section bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <p className="section-eyebrow">The short version</p>
+            <h2 className="display text-3xl sm:text-4xl mb-4">Labyro in 12 seconds.</h2>
+            <p className="text-lg text-gray-600">
+              From cold-email chaos to structured applications — with AI guidance on every candidate.
+            </p>
+          </div>
+          <div className="card overflow-hidden shadow-float max-w-3xl mx-auto">
+            <video
+              ref={pitchVideoRef}
+              className="block w-full h-auto"
+              autoPlay={!prefersReducedMotion}
+              controls={prefersReducedMotion}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-label="12-second demo: cold-email chaos becomes structured applications with AI fit guidance"
+            >
+              {/* WebM first: open-codec browsers (and the harness Chromium,
+                  which has no H.264) pick it; Safari falls back to MP4. */}
+              <source src="/labyro-pitch.webm" type="video/webm" />
+              <source src="/labyro-pitch.mp4" type="video/mp4" />
+              <track kind="captions" src="/labyro-pitch.vtt" srcLang="en" label="English" />
+            </video>
           </div>
         </div>
       </section>
